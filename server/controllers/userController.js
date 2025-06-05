@@ -22,30 +22,29 @@ class UserController {
         }
         const hashPassword = await bcrypt.hash(password, 5)
         const user = await User.create({email, role, password: hashPassword})
-        const basket = await Basket.create({userId: user.id})
-        const token = generateJwt(user.id, user.email, user.role)
+        const token = generateJwt(user.id, user.email, role)
 
         return res.json({token})
     }
 
     async login(req, res, next) {
         const {email, password} = req.body
-        const user = await User.findOne({where:{email}})
-        if(!user){
+        const user = await User.findOne({where: {email}})
+        if (!user) {
             return next(apiError.badRequest('No user found'))
         }
         let comparePassword = bcrypt.compareSync(password, user.password)
-        if(!comparePassword){
+        if (!comparePassword) {
             next(apiError.badRequest('No correct password'))
         }
-        const token = generateJwt({email:user.email, password:user.password, role:user.role})
+        const token = generateJwt({email: user.email, password: user.password, role: user.role})
 
         return res.json({token})
 
     }
 
     async auth(req, res, next) {
-        const token = generateJwt({email:req.user.email, password:req.user.password, role:req.user.role})
+        const token = generateJwt({email: req.user.email, password: req.user.password, role: req.user.role})
 
         return res.json({token})
     }
