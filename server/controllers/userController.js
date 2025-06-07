@@ -1,7 +1,9 @@
 const apiError = require('../error/apiErrors')
 const bcrypt = require('bcrypt')
-const {User, Basket} = require('../models/models')
+const {User, UserInfo, CompanyInfo} = require('../models/models')
 const jwt = require('jsonwebtoken')
+const path = require("path")
+const uuid = require('uuid')
 
 const generateJwt = (id, email, role) => {
     return jwt.sign(
@@ -10,19 +12,72 @@ const generateJwt = (id, email, role) => {
         {expiresIn: '24h'})
 }
 
+function hasExtension(fileName) {
+    if (typeof fileName !== 'string' || !fileName.includes('.')) {
+        throw new Error('Invalid file name');
+    }
+    return fileName.split('.')[1];
+}
+
 class UserController {
+    async editById(req, res, next) {
+        const userId = req.params.id;
+        const updates = req.body;
+        try {
+            const user = await User.findByPk(userId);
+
+            if (!user) {
+                return next(apiError.badRequest('No user found with this ID'))
+            }
+            await user.update(updates);
+            res.status(200).json(user);
+        } catch (error) {
+            return next(apiError.badRequest('Error updating user:', error))
+
+        }
+    }
+    async deleteById(req, res, next) {
+        const userId = req.params.id;
+        try {
+            const result = await User.destroy({
+                where: {
+                    id: userId
+                }
+            });
+
+            if (result === 0) {
+                return next(apiError.badRequest('No user found with this ID'))
+            }
+            return res.status(200).message({text:"Ok"})
+        } catch (error) {
+            return next(apiError.badRequest('Error deleting user:', error))
+
+        }
+    }
     async registration(req, res, next) {
-        const {email, password, role} = req.body
+        const {email, password, role, description} = req.body
         if (!email || !password) {
             return next(apiError.badRequest('No correct email or password'))
         }
+        const {img} = req.files;
+        let fileName;
+        if (img.name) {
+            let fileExt = hasExtension(img.name)
+            fileName = uuid.v4() + '.' + fileExt
+            await img.mv(path.resolve(__dirname, '..', 'static', fileName))
+        }
+
         const candidate = await User.findOne({where: {email}})
         if (candidate) {
             return next(apiError.badRequest('User with this email is already exist'))
         }
         const hashPassword = await bcrypt.hash(password, 5)
         const user = await User.create({email, role, password: hashPassword})
-        const token = generateJwt(user.id, user.email, role)
+        const token = generateJwt(user.id, user.email, user.role)
+        await UserInfo.create({
+            description,
+            img: fileName
+        });
 
         return res.json({token})
     }

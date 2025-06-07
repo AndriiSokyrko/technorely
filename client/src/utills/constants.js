@@ -1,0 +1,5 @@
+export const ADMIN_ROUTE = '/admin'
+export const LOGIN_ROUTE = '/login'
+export const REGISTRATION_ROUTE = '/registration'
+export const DASHBOARD_ADMIN_ROUTE = '/dashboard_admin'
+export const DASHBOARD_PUBLIC_ROUTE = '/dashboard_public'
