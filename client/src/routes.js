@@ -1,21 +1,17 @@
-import {ADMIN_ROUTE, DASHBOARD_ADMIN_ROUTE, DASHBOARD_PUBLIC_ROUTE,LOGIN_ROUTE, REGISTRATION_ROUTE} from "./utills/constants";
+import {ADMIN_ROUTE,  LOGIN_ROUTE, PUBLIC_ROUTE, REGISTRATION_ROUTE} from "./utils/consts";
 import Auth from "./pages/Auth";
 import DashBoardPublic from "./pages/DashBoardPublic";
 import DashBoardAdmin from "./pages/DashBoardAdmin";
 
-export const authRotes= [
+export const adminRoutes= [
     {
         path: ADMIN_ROUTE,
-        Component:Admin
-    },
-    {
-        path: DASHBOARD_ADMIN_ROUTE,
         Component:DashBoardAdmin
     }
 ]
-export const publickRotes= [
+export const publickRoutes= [
     {
-        path: DASHBOARD_PUBLIC_ROUTE,
+        path: PUBLIC_ROUTE,
         Component:DashBoardPublic
     },
     {

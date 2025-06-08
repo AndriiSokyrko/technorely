@@ -9,7 +9,7 @@ module.exports = async function (req, res, next) {
                 {name: 'USER'},
                 {name: 'ADMIN'},
                 {name: 'SUPERADMIN'},
-            ], {ignoreDuplicates: true});
+            ], {ignoreDuplicates: false});
         }
         next();
     } catch (e) {

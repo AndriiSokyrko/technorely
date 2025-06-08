@@ -2,6 +2,7 @@ const {Company, CompanyInfo, User} = require('../models/models');
 const uuid = require('uuid')
 const path = require('path')
 const apiError = require('../error/apiErrors')
+const {body} = require("nodemon");
 
 function hasExtension(filePath, extension) {
     return path.extname(filePath) === extension;
@@ -11,27 +12,30 @@ class CompanyController {
 
     async create(req, res, next) {
         try {
-            let {name, company_info} = req.body
-            const {img} = req.files
-            let fileExt = hasExtension(img.name)
-            let fileName = uuid.v4() + '.' +fileExt
-            await img.mv(path.resolve(__dirname, '..', 'static', fileName))
+            const {name, description, service, capital, userId} = req.body
+            const flag = await Company.findOne({where:{name}})
 
-            const company = await Company.create({name})
-
-            if(company_info){
-                company_info = json.parse(company_info)
-                company_info.forEach(i=>
-                    CompanyInfo.create(
-                        {
-                            description: i.description,
-                            service: i.title,
-                            capital: i.capital,
-                            img: fileName,
-                        }
-                    )
-                )
+            if(flag){
+                return next(apiError.badRequest('Company with this name is already exist: '+ name))
             }
+
+            let fileName;
+            if(req.files) {
+                const {img} = req.files
+                let fileExt = hasExtension(img.name)
+                fileName = uuid.v4() + '.' + fileExt
+                await img.mv(path.resolve(__dirname, '..', 'static', fileName))
+            }
+            const company = Company.create(
+                {
+                    name,
+                    description,
+                    service,
+                    capital,
+                    img: fileName,
+                    userId
+                }
+            )
             return res.json(company)
         } catch (e) {
             next(apiError.badRequest(e.message))
@@ -43,21 +47,21 @@ class CompanyController {
         let {brandId, typeId, limit, page} = req.query
         page = page || 1
         limit = limit || 9
-        let offset = page*limit - limit
-        let  devices
+        let offset = page * limit - limit
+        let devices
         try {
             if (!brandId && !typeId) {
                 devices = await Device.findAll({limit, offset})
             }
             if (brandId && !typeId) {
-                devices = await Device.findAll({where: {brandId},limit, offset})
+                devices = await Device.findAll({where: {brandId}, limit, offset})
             }
             if (!brandId && typeId) {
-                devices = await Device.findAll({where: {typeId},limit, offset})
+                devices = await Device.findAll({where: {typeId}, limit, offset})
 
             }
             if (brandId && typeId) {
-                devices = await Device.findAll({where: {brandId, typeId},limit, offset})
+                devices = await Device.findAll({where: {brandId, typeId}, limit, offset})
             }
             return res.json(devices)
         } catch (e) {
@@ -67,9 +71,9 @@ class CompanyController {
     }
 
     async getOne(req, res) {
-        const {id}= req.params
+        const {id} = req.params
         const devices = await Device.findOne({
-            where:{id},
+            where: {id},
             include: [{model: DeviceInfo, as: 'info'}]
         })
         return res.json(devices)
@@ -91,6 +95,7 @@ class CompanyController {
 
         }
     }
+
     async deleteById(req, res, next) {
         const companyId = req.params.id;
         try {
@@ -103,7 +108,7 @@ class CompanyController {
             if (result === 0) {
                 return next(apiError.badRequest('No company found with this ID'))
             }
-            return res.status(200).message({text:"Ok"})
+            return res.status(200).message({text: "Ok"})
         } catch (error) {
             return next(apiError.badRequest('Error deleting company:', error))
 

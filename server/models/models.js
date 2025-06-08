@@ -14,12 +14,12 @@ const User = sequelize.define('user', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     email: {type: DataTypes.STRING, unique: true},
     password: {type: DataTypes.STRING},
-    role: {type: DataTypes.STRING, default: 'USER'},
+    role: {type: DataTypes.STRING, defaultValue: 'USER'},
 })
 const UserInfo = sequelize.define('user_info', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    description: {type: DataTypes.STRING},
-    img: {type: DataTypes.STRING},
+    description: {type: DataTypes.STRING, allowNull:true, defaultValue:""},
+    img: {type: DataTypes.STRING, allowNull: true, defaultValue:'21077d74-6ba3-40fb-9e67-ff259800720f.png'},
 })
 
 const Company = sequelize.define('company', {
@@ -28,14 +28,14 @@ const Company = sequelize.define('company', {
     description: {type: DataTypes.STRING, allowNull: false},
     service: {type: DataTypes.STRING, unique: false, allowNull: false},
     capital: {type: DataTypes.INTEGER, allowNull: false},
-    img: {type: DataTypes.STRING, allowNull: false},
+    img: {type: DataTypes.STRING, allowNull: true},
 })
 
 User.hasMany(Company)
 Company.belongsTo(User)
 
-User.hasOne(UserInfo, {as: 'info'})
-UserInfo.belongsTo(User)
+User.hasOne(UserInfo);
+UserInfo.belongsTo(User);
 
 
 module.exports = {

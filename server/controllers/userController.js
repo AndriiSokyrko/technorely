@@ -59,9 +59,9 @@ class UserController {
         if (!email || !password) {
             return next(apiError.badRequest('No correct email or password'))
         }
-        const {img} = req.files;
         let fileName;
-        if (img.name) {
+        if(req.files) {
+            const {img} = req.files;
             let fileExt = hasExtension(img.name)
             fileName = uuid.v4() + '.' + fileExt
             await img.mv(path.resolve(__dirname, '..', 'static', fileName))
@@ -75,8 +75,9 @@ class UserController {
         const user = await User.create({email, role, password: hashPassword})
         const token = generateJwt(user.id, user.email, user.role)
         await UserInfo.create({
-            description,
-            img: fileName
+            userId: user.id,
+            description: description || null,
+            img: fileName || null
         });
 
         return res.json({token})

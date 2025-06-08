@@ -16,8 +16,6 @@ module.exports = function (role) {
             if (decoded.id.role !== role) {
                 return res.status(403).message({message: 'No access'})
             }
-            console.log(decoded)
-            // req.user = decoded.id
             next()
         } catch (e) {
             return res.status(500).json({message: e.message})
