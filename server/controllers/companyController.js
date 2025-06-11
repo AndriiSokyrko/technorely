@@ -3,6 +3,8 @@ const uuid = require('uuid')
 const path = require('path')
 const apiError = require('../error/apiErrors')
 const {body} = require("nodemon");
+const fs = require("fs");
+const {Op} = require("sequelize");
 
 function hasExtension(filePath, extension) {
     return path.extname(filePath) === extension;
@@ -22,10 +24,14 @@ class CompanyController {
             let fileName;
             if(req.files) {
                 const {img} = req.files
-                let fileExt = hasExtension(img.name)
-                fileName = uuid.v4() + '.' + fileExt
-                await img.mv(path.resolve(__dirname, '..', 'static', fileName))
+                const filePath = path.resolve(__dirname, '..', 'static', img.name);
+                if (!fs.existsSync(filePath)) {
+                    await img.mv(filePath);
+                }
+
+                fileName = img.name
             }
+            console.log(req.files)
             const company = Company.create(
                 {
                     name,
@@ -44,52 +50,70 @@ class CompanyController {
     }
 
     async getAll(req, res, next) {
-        let {brandId, typeId, limit, page} = req.query
+        let {startDate, endDate, valueMin, valueMax,capital,userId,limit, page} = req.query
         page = page || 1
         limit = limit || 9
         let offset = page * limit - limit
-        let devices
-        try {
-            if (!brandId && !typeId) {
-                devices = await Device.findAll({limit, offset})
-            }
-            if (brandId && !typeId) {
-                devices = await Device.findAll({where: {brandId}, limit, offset})
-            }
-            if (!brandId && typeId) {
-                devices = await Device.findAll({where: {typeId}, limit, offset})
+        let companies
 
+        if(userId) companies =await Company.findByPk(userId)
+        try {
+            const whereConditions = {};
+
+            if (userId) {
+                whereConditions.userId = userId;
             }
-            if (brandId && typeId) {
-                devices = await Device.findAll({where: {brandId, typeId}, limit, offset})
+            if (capital) {
+                whereConditions.capital = capital;
             }
-            return res.json(devices)
+            if (valueMin && valueMax) {
+                whereConditions.capital = {
+                    [Op.gte]: valueMin,
+                    [Op.lte]: valueMax
+                };
+            }
+            if (startDate && endDate) {
+                whereConditions.createdAt = {
+                    [Op.gte]: new Date(startDate),
+                    [Op.lte]: new Date(endDate)
+                };
+            }
+            companies = await Company.findAndCountAll({
+                where: whereConditions,
+                limit,
+                offset
+            });
+            return res.json(companies)
         } catch (e) {
             next(apiError.badRequest(e.message))
         }
 
     }
 
-    async getOne(req, res) {
+    async getOne(req, res, next) {
         const {id} = req.params
-        const devices = await Device.findOne({
-            where: {id},
-            include: [{model: DeviceInfo, as: 'info'}]
-        })
-        return res.json(devices)
+        console.log(id)
+        try {
+            const company = await Company.findOne({
+                where: {id}
+            })
+            return res.json(company)
+        } catch (e) {
+            return next(apiError.badRequest(e.message))
+        }
     }
 
     async updateById(req, res) {
-        const userId = req.params.id;
+        const id = req.params.id;
         const updates = req.body;
         try {
-            const user = await User.findByPk(userId);
+            const company = await Company.findByPk(id);
 
-            if (!user) {
+            if (!company) {
                 return next(apiError.badRequest('No user found with this ID'))
             }
-            await user.update(updates);
-            res.status(200).json(user);
+            await company.update(updates);
+            res.status(200).json(company);
         } catch (error) {
             return next(apiError.badRequest('Error updating user:', error))
 
@@ -97,18 +121,18 @@ class CompanyController {
     }
 
     async deleteById(req, res, next) {
-        const companyId = req.params.id;
+        const {id} = req.params;
         try {
             const result = await Company.destroy({
                 where: {
-                    id: userId
+                    id
                 }
-            });
+            })
 
             if (result === 0) {
                 return next(apiError.badRequest('No company found with this ID'))
             }
-            return res.status(200).message({text: "Ok"})
+            return res.status(200).json({text: "Ok"})
         } catch (error) {
             return next(apiError.badRequest('Error deleting company:', error))
 

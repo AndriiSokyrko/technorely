@@ -1,0 +1,26 @@
+.active-pagination {
+    background-color: black !important;
+    color: white !important;
+    border-color: black !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: black !important;
+    color: white !important;
+    border-color: black !important;
+}
+
+/* Стили для активной кнопки при наведении */
+.pagination .page-item.active .page-link:hover {
+    background-color: #333 !important;
+    color: white !important;
+}
+
+.pagination .page-link {
+    color: black !important;
+}
+
+.pagination .page-link:hover {
+    background-color: #f8f9fa !important;
+    color: black !important;
+}

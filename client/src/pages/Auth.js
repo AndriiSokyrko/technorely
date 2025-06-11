@@ -4,10 +4,11 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
-import {LOGIN_ROUTE, REGISTRATION_ROUTE, ADMIN_ROUTE, PUBLIC_ROUTE} from "../utils/consts";
+import {LOGIN_ROUTE, REGISTRATION_ROUTE, ADMIN_ROUTE, PUBLIC_ROUTE, ROOT_ROUTE} from "../utils/consts";
 import {login, registration} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
+import {validateEmail} from "../utils/common";
 
 const Auth = observer(() => {
     const {user} = useContext(Context)
@@ -16,7 +17,7 @@ const Auth = observer(() => {
     const isLogin = location.pathname === LOGIN_ROUTE
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
+    const [isEmailValid, setIsEmailValid] = useState(true);
     const click = async () => {
         try {
             if (isLogin) {
@@ -27,13 +28,12 @@ const Auth = observer(() => {
             user.setUser(user)
             user.setIsAuth(true)
 
-            user.role==='ADMIN' || 'SUPERADMIN' ? navigate(ADMIN_ROUTE): navigate(PUBLIC_ROUTE);
+            // user.role==='ADMIN' || 'SUPERADMIN' ? navigate(ADMIN_ROUTE): navigate(PUBLIC_ROUTE);
+            navigate(ADMIN_ROUTE)
         } catch (e) {
             alert(e.response.data.message)
         }
-
     }
-
     return (
         <Container
             className="d-flex justify-content-center align-items-center"
@@ -43,10 +43,16 @@ const Auth = observer(() => {
                 <h2 className="m-auto">{isLogin ? 'Авторизация' : "Регистрация"}</h2>
                 <Form className="d-flex flex-column">
                     <Form.Control
+                        type="email"
                         className="mt-3"
                         placeholder="Введите ваш email..."
                         value={email}
-                        onChange={e => setEmail(e.target.value)}
+                        isInvalid={!isEmailValid}
+                        onChange={e => {
+                            setEmail(e.target.value)
+                            setIsEmailValid(validateEmail(e.target.value));
+                        }}
+
                     />
                     <Form.Control
                         className="mt-3"

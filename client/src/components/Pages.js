@@ -2,10 +2,11 @@ import React, {useContext} from 'react';
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {Pagination} from "react-bootstrap";
+import '../styles/page.css';
 
 const Pages = observer(() => {
-    const {companies} = useContext(Context)
-    const pageCount = Math.ceil(companies.totalCount / companies.limit)
+    const {company} = useContext(Context)
+    const pageCount = Math.ceil(company.totalCount / company.limit)
     const pages = []
 
     for (let i = 0; i < pageCount; i++) {
@@ -13,12 +14,13 @@ const Pages = observer(() => {
     }
 
     return (
-        <Pagination className="mt-3">
+        <Pagination className="mt-3 text-black">
             {pages.map(page =>
                 <Pagination.Item
                     key={page}
-                    active={companies.page === page}
-                    onClick={() => companies.setPage(page)}
+                    active={company.page === page}
+                    onClick={() => company.setPage(page)}
+                    className={company.page === page ? 'active-pagination' : ''}
                 >
                     {page}
                 </Pagination.Item>

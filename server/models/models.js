@@ -31,10 +31,11 @@ const Company = sequelize.define('company', {
     img: {type: DataTypes.STRING, allowNull: true},
 })
 
-User.hasMany(Company)
+User.hasMany(Company,{ onDelete: 'CASCADE' })
 Company.belongsTo(User)
 
-User.hasOne(UserInfo);
+
+User.hasOne(UserInfo,{ onDelete: 'CASCADE' });
 UserInfo.belongsTo(User);
 
 

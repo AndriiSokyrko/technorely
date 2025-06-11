@@ -1,39 +1,29 @@
 import {$authHost, $host} from "./index";
-import jwt_decode from "jwt-decode";
 
-export const createType = async (type) => {
-    const {data} = await $authHost.post('api/type', type)
+export const editCompany = async (company) => {
+    const res = Object.fromEntries(company.entries());
+    const {data} = await $authHost.patch(`api/company/${res.id}`, company)
+    return data
+}
+export const createCompany = async (company) => {
+    const {data} = await $authHost.post('api/company', company)
+    return data
+}
+export const deleteCompany = async (id) => {
+    const {data} = await $authHost.delete(`api/company/${id}`)
     return data
 }
 
-export const fetchTypes = async () => {
-    const {data} = await $host.get('api/type')
-    return data
-}
 
-export const createBrand = async (brand) => {
-    const {data} = await $authHost.post('api/brand', brand)
-    return data
-}
-
-export const fetchBrands = async () => {
-    const {data} = await $host.get('api/brand', )
-    return data
-}
-
-export const createDevice = async (device) => {
-    const {data} = await $authHost.post('api/device', device)
-    return data
-}
-
-export const fetchDevices = async (typeId, brandId, page, limit= 5) => {
-    const {data} = await $host.get('api/device', {params: {
-            typeId, brandId, page, limit
+// export const fetchCompany = async ( startDate, endDate,  valueMin, valueMax, capital, userId, page, limit= 5) => {
+export const fetchCompany = async ( startDate, endDate, capital, userId, page, limit= 5) => {
+    const {data} = await $host.get('api/company', {params: {
+            startDate, endDate, capital, userId, page, limit
         }})
     return data
 }
 
-export const fetchOneDevice = async (id) => {
-    const {data} = await $host.get('api/device/' + id)
+export const fetchCompanyById = async (id) => {
+    const {data} = await $host.get(`api/company/${id}`)
     return data
 }
