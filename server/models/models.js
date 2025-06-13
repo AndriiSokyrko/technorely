@@ -19,7 +19,7 @@ const User = sequelize.define('user', {
 const UserInfo = sequelize.define('user_info', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     description: {type: DataTypes.STRING, allowNull:true, defaultValue:''},
-    img: {type: DataTypes.STRING, allowNull: true, defaultValue:'21077d74-6ba3-40fb-9e67-ff259800720f.png'},
+    img: {type: DataTypes.STRING, allowNull: true, defaultValue:'profile1.png'},
 })
 
 const Company = sequelize.define('company', {

@@ -45,7 +45,6 @@ class CompanyController {
 
             if (info) {
                 info = JSON.parse(info)
-                console.log(info)
                     CompanyInfo.create({
                         companyId: company.id,
                         pricePolitic1kv:info.pricePolitic1kv,
@@ -62,7 +61,7 @@ class CompanyController {
     }
 
     async getAll(req, res, next) {
-        let {startDate, endDate, valueMin, valueMax,userId, page, limit,nameSort, typeSort} = req.query
+        let {startDate, endDate, valueMin, valueMax,userId, role, page, limit,nameSort, typeSort} = req.query
         page = page || 1
         limit = limit || 9
         let offset = page * limit - limit
@@ -70,8 +69,7 @@ class CompanyController {
         if(userId) companies =await Company.findByPk(userId)
         try {
             const whereConditions = {};
-
-            if (userId) {
+            if (userId && role=='USER' ) {
                 whereConditions.userId = userId;
             }
 
@@ -94,6 +92,7 @@ class CompanyController {
             companies = await Company.findAndCountAll({
                 where: whereConditions,
                 order: order.length ? [order] : undefined,
+                include: [{model: CompanyInfo}],
                 limit,
                 offset
             });
@@ -106,7 +105,6 @@ class CompanyController {
 
     async getOne(req, res, next) {
         const {id} = req.params
-        console.log("===",id)
         try {
             const company = await Company.findOne({
                 where: {id},
@@ -121,7 +119,7 @@ class CompanyController {
     async updateById(req, res) {
         const id = req.params.id;
         let updates = req.body;
-
+        const {info} = req.body.info
         let fileName;
         if(req.files) {
             const {img} = req.files
@@ -139,7 +137,11 @@ class CompanyController {
             if (!company) {
                 return next(apiError.badRequest('No user found with this ID'))
             }
+            console.log(req.body)
             await company.update(updates);
+            const companyInfo = await CompanyInfo.findOne({where: {companyId:id}});
+            await companyInfo.update(info);
+
             res.status(200).json(company);
         } catch (error) {
             return next(apiError.badRequest('Error updating user:', error))

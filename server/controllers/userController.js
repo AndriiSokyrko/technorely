@@ -21,29 +21,39 @@ function hasExtension(fileName) {
 }
 
 class UserController {
+
     async editById(req, res, next) {
         const userId = req.params.id;
-        const updates = req.body;
-        try {
-            const user = await User.findByPk(userId);
-
-            if (!user) {
-                return next(apiError.badRequest('No user found with this ID'))
+        let {email, role, description} = req.body
+        let fileName;
+        if (req.files) {
+            const {img} = req.files;
+            const filePath = path.resolve(__dirname, '..', 'static', img.name);
+            if (fs.existsSync(filePath)) {
+                await img.mv(filePath);
             }
-            await user.update(updates);
-            res.status(200).json(user);
-        } catch (error) {
-            return next(apiError.badRequest('Error updating user:', error))
-
+            fileName = img.name
         }
+        const user = await User.findOne({where: {id: userId}});
+
+        if (!user) {
+            return next(apiError.badRequest('No user found with this ID'))
+        }
+        await user.update({email, role});
+        const userInfo = await UserInfo.findOne({where: {userId}});
+        await userInfo.update({description, img:fileName});
+
+        res.status(200).json(user);
+
     }
+
     async getById(req, res, next) {
         const id = req.params.id;
-        console.log("===", id)
+
         try {
             const userWithInfo = await User.findOne({
-                where: { id },
-                include: [{ model: UserInfo }]
+                where: {id},
+                include: [{model: UserInfo}]
             })
             if (!userWithInfo) {
                 return next(apiError.badRequest('No user found with this ID'))
@@ -54,6 +64,7 @@ class UserController {
 
         }
     }
+
     async deleteById(req, res, next) {
         const userId = req.params.id;
         try {
@@ -73,37 +84,42 @@ class UserController {
         }
     }
 
-    async registration(req, res, next) {
-        const {email, password, role, description} = req.body
+    async resetPassword(req, res, next) {
+        const {email, password} = req.body
+
         if (!email || !password) {
             return next(apiError.badRequest('No correct email or password'))
         }
-        let fileName;
-        if (req.files) {
-            const {img} = req.files;
-            const filePath = path.resolve(__dirname, '..', 'static', img.name);
-            if (fs.existsSync(filePath)) {
-                await img.mv(filePath);
-            }
-            fileName = img.name
-
+        const user = await User.findOne({where: {email}})
+        if (!user) {
+            return next(apiError.badRequest('User with this email is not found'))
         }
 
+        const hashPassword = await bcrypt.hash(password, 5)
+         await user.update({password: hashPassword})
+
+        const token = generateJwt(user.id, user.email, user.role)
+
+        return res.json({token})
+    }
+
+    async registration(req, res, next) {
+        const {email, password} = req.body
+        if (!email || !password) {
+            return next(apiError.badRequest('No correct email or password'))
+        }
         const candidate = await User.findOne({where: {email}})
         if (candidate) {
             return next(apiError.badRequest('User with this email is already exist'))
         }
         const hashPassword = await bcrypt.hash(password, 5)
-        const user = await User.create({email, password: hashPassword, role})
+        const user = await User.create({email, password: hashPassword})
         const token = generateJwt(user.id, user.email, user.role)
-        await UserInfo.create({
-            userId: user.id,
-            description: description || 'test' ,
-            img: fileName
-        });
+        await UserInfo.create({userId: user.id});
 
         return res.json({token})
     }
+
 
     async login(req, res, next) {
         const {email, password} = req.body
@@ -127,8 +143,45 @@ class UserController {
     }
 
     async getAll(req, res, next) {
-        const users = await User.findAll()
+        let {  page, limit } = req.query
+        console.log(limit)
+        page = page || 1
+        limit = limit || 9
+        let offset = page * limit - limit
+        const users = await User.findAndCountAll({
+            include: [{model: UserInfo}],
+            limit,
+            offset
+        })
         return res.json(users)
+    }
+    async create(req, res, next) {
+        let {email, role,password, description} = req.body
+        console.log("===",req.body)
+
+        if (!email || !password) {
+            return next(apiError.badRequest('No correct email or password'))
+        }
+        const candidate = await User.findOne({where: {email}})
+        if (candidate) {
+            return next(apiError.badRequest('User with this email is already exist'))
+        }
+        let fileName;
+        if (req.files) {
+            const {img} = req.files;
+            const filePath = path.resolve(__dirname, '..', 'static', img.name);
+            if (fs.existsSync(filePath)) {
+                await img.mv(filePath);
+            }
+            fileName = img.name
+        }
+
+        const hashPassword = await bcrypt.hash(password, 5)
+        const user = await User.create({email, password: hashPassword,role})
+        await UserInfo.create({userId: user.id,description,img: fileName});
+
+
+        res.status(200).json(user);
     }
 }
 

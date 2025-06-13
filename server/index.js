@@ -3,8 +3,12 @@ require('./models/models')
 
 const express = require('express')
 const sequelize = require('./db')
+const passport = require('passport')
+const bodyParser = require('body-parser')
+const keys = require('./config/config');
 const cors = require('cors')
 const fileUpload = require('express-fileupload')
+
 const PORT = process.env.PORT || 5000
 const app =  express()
 
