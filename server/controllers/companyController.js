@@ -1,4 +1,4 @@
-const {Company, CompanyInfo, User} = require('../models/models');
+const {Company, CompanyInfo, User, UserInfo} = require('../models/models');
 const uuid = require('uuid')
 const path = require('path')
 const apiError = require('../error/apiErrors')
@@ -14,7 +14,7 @@ class CompanyController {
 
     async create(req, res, next) {
         try {
-            const {name, description, service, capital, userId} = req.body
+            let {name, description, service, capital, userId, info} = req.body
             const flag = await Company.findOne({where:{name}})
 
             if(flag){
@@ -31,8 +31,8 @@ class CompanyController {
 
                 fileName = img.name
             }
-            console.log(req.files)
-            const company = Company.create(
+
+            const company = await Company.create(
                 {
                     name,
                     description,
@@ -42,6 +42,18 @@ class CompanyController {
                     userId
                 }
             )
+
+            if (info) {
+                info = JSON.parse(info)
+                console.log(info)
+                    CompanyInfo.create({
+                        companyId: company.id,
+                        pricePolitic1kv:info.pricePolitic1kv,
+                        pricePolitic2kv:info.pricePolitic2kv,
+                        pricePolitic3kv:info.pricePolitic2kv,
+                        pricePolitic4kv:info.pricePolitic2kv,
+                    })
+            }
             return res.json(company)
         } catch (e) {
             next(apiError.badRequest(e.message))
@@ -50,12 +62,11 @@ class CompanyController {
     }
 
     async getAll(req, res, next) {
-        let {startDate, endDate, valueMin, valueMax,capital,userId,limit, page} = req.query
+        let {startDate, endDate, valueMin, valueMax,userId, page, limit,nameSort, typeSort} = req.query
         page = page || 1
         limit = limit || 9
         let offset = page * limit - limit
         let companies
-
         if(userId) companies =await Company.findByPk(userId)
         try {
             const whereConditions = {};
@@ -63,9 +74,7 @@ class CompanyController {
             if (userId) {
                 whereConditions.userId = userId;
             }
-            if (capital) {
-                whereConditions.capital = capital;
-            }
+
             if (valueMin && valueMax) {
                 whereConditions.capital = {
                     [Op.gte]: valueMin,
@@ -78,8 +87,13 @@ class CompanyController {
                     [Op.lte]: new Date(endDate)
                 };
             }
+            let order=[]
+            if (nameSort !== undefined && typeSort !== undefined) {
+                order = [nameSort, typeSort]
+            }
             companies = await Company.findAndCountAll({
                 where: whereConditions,
+                order: order.length ? [order] : undefined,
                 limit,
                 offset
             });
@@ -92,10 +106,11 @@ class CompanyController {
 
     async getOne(req, res, next) {
         const {id} = req.params
-        console.log(id)
+        console.log("===",id)
         try {
             const company = await Company.findOne({
-                where: {id}
+                where: {id},
+                include: [{ model: CompanyInfo }]
             })
             return res.json(company)
         } catch (e) {
@@ -105,7 +120,19 @@ class CompanyController {
 
     async updateById(req, res) {
         const id = req.params.id;
-        const updates = req.body;
+        let updates = req.body;
+
+        let fileName;
+        if(req.files) {
+            const {img} = req.files
+            const filePath = path.resolve(__dirname, '..', 'static', img.name);
+            if (!fs.existsSync(filePath)) {
+                await img.mv(filePath);
+            }
+
+            fileName = img.name
+            updates = {...updates,img:fileName}
+        }
         try {
             const company = await Company.findByPk(id);
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import Container from "react-bootstrap/Container";
+import {Spinner} from "react-bootstrap";
 
 const ComponentSpinner = () => {
     return (
@@ -8,7 +9,7 @@ const ComponentSpinner = () => {
             style={{height: window.innerHeight - 54}}
         >
             <ComponentSpinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
+                  <Spinner animation="grow" />;
             </ComponentSpinner>
         </Container>
     );

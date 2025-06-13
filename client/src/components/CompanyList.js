@@ -7,7 +7,8 @@ import {fetchCompany} from "../http/companyAPI";
 import EditCompany from "./modals/EditCompany";
 import {forEach} from "react-bootstrap/ElementChildren";
 
-const CompanyList = observer(({handleEditCompany}) => {
+// const CompanyList = observer(({handleEditCompany,nameSort, typeSort}) => {
+const CompanyList = observer(() => {
     const {company, user} = useContext(Context)
     const [companyVisible, setCompanyVisible] = useState(false)
     const [companyId, setCompanyId] = useState(false)
@@ -18,23 +19,18 @@ const CompanyList = observer(({handleEditCompany}) => {
     }
 
     useEffect(() => {
-        company.setFlagRedraw(0)
-        fetchCompany(null, null, null,null, user.id, company.page, company.limit).then(data => {
+            const startDate = company.getStartDate!=null ? new Date(company.getStartDate.setHours(0, 0, 0, 0) ): null
+            const endDate = company.getEndDate!=null ? new Date(company.getEndDate.setHours(23, 59, 999, 0) ): null
+
+        fetchCompany(startDate, endDate, company.minCapital,company.maxCapital, user.getUser.id,user.getUser.role,
+            company.page, company.limit,company.getNameSort, company.getTypeSort).then(data => {
                 company.setCompany(data.rows)
                 company.setTotalCount(data.count)
-                // let min = data.rows[0]
-                // let max = data.rows[0]
-            console.log(data.rows)
-                // data.rows.each(item => {
-                //     if (min > item.capital) min = data.capital
-                //     if (max < item.capital) min = data.capital
-                // })
-                // company.setMinCapital(min)
-                // company.setMaxCapital(max)
             }
         )
+        company.setFlagRedraw(0)
 
-    }, [company.page, company.flagRedraw])
+    }, [company.page, company.flagRedraw, company.getNameSort, company.getTypeSort])
     return (
         <Row className="d-flex">
             {company.getCompany.map(comp =>

@@ -8,7 +8,18 @@ export default class UserStore {
         this._isAuth = false
         this._user = {}
         this._users = []
+        this._usersInfo = []
+        this._flagRedraw =0
+        this._totalCount = 0
+        this._page = 1
+        this._limit = 2
         makeAutoObservable(this)
+    }
+    setUserInfo(info){
+        this._usersInfo = info
+    }
+    setFlagRedraw(num){
+        this._flagRedraw = num
     }
 
     setIsAuth(bool) {
@@ -20,7 +31,17 @@ export default class UserStore {
     setUsers(users) {
         this._users=users
     }
+    setPage(page) {
+        this._page = page
+    }
+    setLimit(limit) {
+        this._limit = limit
+    }
 
+
+    setTotalCount(count) {
+        this._totalCount = count
+    }
     get isAuth() {
         return this._isAuth
     }
@@ -29,5 +50,22 @@ export default class UserStore {
     }
     get getUsers() {
         return this._users
+    }
+    get getUserInfo(){
+        return this._usersInfo
+    }
+    get getflagRedraw(){
+        return this._flagRedraw
+    }
+    get totalCount() {
+        return this._totalCount
+    }
+
+    get page() {
+        return this._page
+    }
+
+    get limit() {
+        return this._limit
     }
 }

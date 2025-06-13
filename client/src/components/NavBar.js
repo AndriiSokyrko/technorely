@@ -1,65 +1,71 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Context} from "../index";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import {ADMIN_ROUTE, LOGIN_ROUTE, PUBLIC_ROUTE} from "../utils/consts";
-import {Button, NavLink} from "react-bootstrap";
+import {LOGIN_ROUTE, USER_ROUTE} from "../utils/consts";
+import {Button, Dropdown, DropdownButton, NavLink} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import Container from "react-bootstrap/Container";
 import {useNavigate} from 'react-router-dom'
-import {check} from "../http/userAPI";
-import {jwtDecode} from "jwt-decode";
+import EditProfile from "./modals/EditProfile";
+import {getUserById} from "../http/userAPI";
+import {getRoles} from "../http/roleApi";
+import Image from "react-bootstrap/Image";
+import ResetPassword from "./modals/resetPassword";
 
 const NavBar = observer(() => {
-    const {user} = useContext(Context)
+    const {user, roles} = useContext(Context)
     const navigate = useNavigate()
-
-    useEffect(() => {
-        if (user.role !== 'USER') {
-            navigate(ADMIN_ROUTE);
-        } else {
-            navigate(PUBLIC_ROUTE);
-        }
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    // try {
-    //     const data = check()
-    //     if (data) {
-    //         user.setIsAuth(true)
-    //         const infoUser = jwtDecode(token)
-    //         user.setUser({id: infoUser.id, role: infoUser.role})
-    //         if (infoUser.role !== 'USER') {
-    //             navigate(ADMIN_ROUTE);
-    //         } else {
-    //             navigate(PUBLIC_ROUTE);
-    //         }
-    //     }
-    // } catch (e) {
-    //     navigate(LOGIN_ROUTE);
-    // }
-    // } else{
-    //     navigate(LOGIN_ROUTE)
-    // }
-    }, [navigate, user]);
+    const [profileVisible, setProfileVisible] = useState()
+    const [resetVisible, setResetVisible] = useState()
 
     const logOut = () => {
         user.setUser({})
         user.setIsAuth(false)
         localStorage.removeItem('token')
+        navigate(LOGIN_ROUTE)
     }
+    const handleProfile = () => {
+        getRoles().then(role => {
+            roles.setRole(role.data)
+
+        }).catch(e => e.message)
+
+
+        setProfileVisible(true)
+    }
+    const handleResetPassword = () => {
+        setResetVisible(true)
+    }
+    useEffect(() => {
+        getUserById(user.getUser.id).then(data => {
+            user.setUserInfo(data.user_info)
+        }).catch(e => console.log(e.message))
+    }, [])
     return (
         <Navbar bg="dark" variant="dark">
-            <Container>
-                <NavLink style={{color: 'white'}} to={user.isAuth ? ADMIN_ROUTE : PUBLIC_ROUTE}>DashBoard</NavLink>
-                {user.isAuth ?
+            <EditProfile show={profileVisible} onHide={() => setProfileVisible(false)}/>
+            <ResetPassword show={resetVisible} onHide={() => setResetVisible(false)}/>
 
-                    <Nav style={{color: 'white'}}>
-                        <Button
-                            variant={"outline-light"}
-                            onClick={() => navigate(ADMIN_ROUTE)}
-                        >
-                            Админ панель
-                        </Button>
+            <Container>
+                <NavLink to={user.isAuth && USER_ROUTE}>DashBoard</NavLink>
+                {user.isAuth ?
+                    <Nav >
+                        {user.getUserInfo.img &&
+                            <Image className="rounded-2 me-2 mt-2" width="25px" height="25px"
+                                   src={process.env.REACT_APP_API_URL + user.getUserInfo.img}/>
+                        }
+                        <Dropdown className="border-4 border-white bg-black">
+                            <Dropdown.Toggle variant={"outline-light"} id="dropdown-basic">
+                                Profile
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu  variant="black" title="profile" className="background-black color-white " >
+                                <Dropdown.Item   onClick={handleProfile}>Edit profile</Dropdown.Item>
+                                <Dropdown.Item onClick={handleResetPassword}>Reset pass..</Dropdown.Item>
+                                <Dropdown.Item>Something...</Dropdown.Item>
+                            </Dropdown.Menu>
+
+                        </Dropdown>
                         <Button
                             variant={"outline-light"}
                             className="mx-2"

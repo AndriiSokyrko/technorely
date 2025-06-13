@@ -4,8 +4,8 @@ import {Context} from "../index";
 import {Pagination} from "react-bootstrap";
 import '../styles/page.css';
 
-const Pages = observer(() => {
-    const {company} = useContext(Context)
+const Pages = observer(({company}) => {
+    // const {company} = useContext(Context)
     const pageCount = Math.ceil(company.totalCount / company.limit)
     const pages = []
 

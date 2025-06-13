@@ -39,14 +39,18 @@ class UserController {
     }
     async getById(req, res, next) {
         const id = req.params.id;
+        console.log("===", id)
         try {
-            const user = await User.findByPk(id);
-            if (!user) {
+            const userWithInfo = await User.findOne({
+                where: { id },
+                include: [{ model: UserInfo }]
+            })
+            if (!userWithInfo) {
                 return next(apiError.badRequest('No user found with this ID'))
             }
-            res.status(200).json(user);
+            res.status(200).json(userWithInfo);
         } catch (error) {
-            return next(apiError.badRequest('Error updating user:', error))
+            return next(apiError.badRequest('Error  user:', error))
 
         }
     }
@@ -77,9 +81,6 @@ class UserController {
         let fileName;
         if (req.files) {
             const {img} = req.files;
-            // let fileExt = hasExtension(img.name)
-            // fileName = uuid.v4() + '.' + fileExt
-            // await img.mv(path.resolve(__dirname, '..', 'static', fileName))
             const filePath = path.resolve(__dirname, '..', 'static', img.name);
             if (fs.existsSync(filePath)) {
                 await img.mv(filePath);
@@ -97,8 +98,8 @@ class UserController {
         const token = generateJwt(user.id, user.email, user.role)
         await UserInfo.create({
             userId: user.id,
-            description: description || null,
-            img: fileName || null
+            description: description || 'test' ,
+            img: fileName
         });
 
         return res.json({token})

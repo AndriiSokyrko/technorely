@@ -4,6 +4,8 @@ import {Button,  Form} from "react-bootstrap";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
 import {createCompany} from "../../http/companyAPI";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 const CreateCompany = observer(({show, onHide}) => {
     const {company, user} = useContext(Context)
@@ -12,6 +14,7 @@ const CreateCompany = observer(({show, onHide}) => {
     const [service, setService] = useState('')
     const [capital, setCapital] = useState(0)
     const [img, setImg] = useState(0)
+    const [info, setInfo] = useState({})
 
     const selectFile = e => {
         setImg(e.target.files[0])
@@ -25,6 +28,7 @@ const CreateCompany = observer(({show, onHide}) => {
         formData.append('capital', capital)
         formData.append('img', img)
         formData.append('userId', user.getUser.id)
+        formData.append('info', JSON.stringify(info))
         createCompany(formData).then(_ => {
             onHide()
             company.setFlagRedraw(1)
@@ -32,7 +36,11 @@ const CreateCompany = observer(({show, onHide}) => {
         }).catch((e) => {
             alert(e.response.data.message)
         })
+        company.setFlagRedraw(3)
     }
+    const handleInfoChange = (key, value) => {
+        info[key]=value
+    };
 
     return (
         <Modal
@@ -47,36 +55,76 @@ const CreateCompany = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
                 <Form>
+                    <Form.Label className=" mt-2 mb-0 p-0">Название</Form.Label>
                     <Form.Control
                         value={name}
                         onChange={e => setName(e.target.value)}
                         className="mt-3"
-                        placeholder="Введите name"
+                        placeholder="Введите naзвание"
                     />
+                    <Form.Label className=" mt-2 mb-0 p-0">Описание</Form.Label>
                     <Form.Control
                         value={description}
                         onChange={e => setDescription(e.target.value)}
                         className="mt-3"
-                        placeholder="Введите description"
+                        placeholder="Описание"
                     />
+                    <Form.Label className=" mt-2 mb-0 p-0">Сервисы</Form.Label>
                     <Form.Control
                         value={service}
                         onChange={e => setService(e.target.value)}
                         className="mt-3"
-                        placeholder="Введите service"
+                        placeholder="Сервисы"
                     />
+                    <Form.Label className=" mt-2 mb-0 p-0">Капитал</Form.Label>
                     <Form.Control
                         value={capital}
                         onChange={e => setCapital(Number(e.target.value))}
                         className="mt-3"
-                        placeholder="Введите capital"
+                        placeholder="Капитал"
                         type="number"
                     />
+                    <Form.Label className=" mt-2 mb-0 p-0">Выберите картинку</Form.Label>
                     <Form.Control
                         className="mt-3"
                         type="file"
                         onChange={selectFile}
                     />
+                    <Form.Label className=" mt-2 mb-0 p-0">Ценовая политиак компании</Form.Label>
+                        <Row className="mt-4" >
+                            <Col md={3}>
+                                <Form.Control
+                                    onChange={ (e)=>handleInfoChange( 'pricePolitic1kv', e.target.value)}
+                                    placeholder="Введите ценовую политику 1 кв"
+                                    type="number"
+
+                                />
+                            </Col>
+                            <Col md={3}>
+                                <Form.Control
+                                    onChange={ (e)=>handleInfoChange( 'pricePolitic2kv', e.target.value)}
+                                    placeholder="Введите ценовую политику 2 кв"
+                                    type="number"
+
+                                />
+                            </Col>
+                            <Col md={3}>
+                                <Form.Control
+                                    onChange={ (e)=>handleInfoChange( 'pricePolitic3kv', e.target.value)}
+                                    placeholder="Введите ценовую политику 3 кв"
+                                    type="number"
+
+
+                                />
+                            </Col>
+                            <Col md={3}>
+                                <Form.Control
+                                    onChange={ (e)=>handleInfoChange( 'pricePolitic4kv', e.target.value)}
+                                    placeholder="Введите ценовую политику 4 кв"
+                                    type="number"
+                                />
+                            </Col>
+                        </Row>
 
                 </Form>
             </Modal.Body>

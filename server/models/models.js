@@ -18,7 +18,7 @@ const User = sequelize.define('user', {
 })
 const UserInfo = sequelize.define('user_info', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    description: {type: DataTypes.STRING, allowNull:true, defaultValue:""},
+    description: {type: DataTypes.STRING, allowNull:true, defaultValue:''},
     img: {type: DataTypes.STRING, allowNull: true, defaultValue:'21077d74-6ba3-40fb-9e67-ff259800720f.png'},
 })
 
@@ -30,15 +30,26 @@ const Company = sequelize.define('company', {
     capital: {type: DataTypes.INTEGER, allowNull: false},
     img: {type: DataTypes.STRING, allowNull: true},
 })
+const CompanyInfo = sequelize.define('company_info', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    pricePolitic1kv: {type: DataTypes.INTEGER, allowNull:true, defaultValue:10000},
+    pricePolitic2kv: {type: DataTypes.INTEGER, allowNull:true, defaultValue:10000},
+    pricePolitic3kv: {type: DataTypes.INTEGER, allowNull:true, defaultValue:10000},
+    pricePolitic4kv: {type: DataTypes.INTEGER, allowNull:true, defaultValue:10000},
+})
+
 
 User.hasMany(Company,{ onDelete: 'CASCADE' })
 Company.belongsTo(User)
 
+Company.hasOne(CompanyInfo,{  foreignKey: 'companyId',onDelete: 'CASCADE' })
+CompanyInfo.belongsTo(Company)
 
-User.hasOne(UserInfo,{ onDelete: 'CASCADE' });
+
+User.hasOne(UserInfo,{  foreignKey: 'userId',onDelete: 'CASCADE' });
 UserInfo.belongsTo(User);
 
 
 module.exports = {
-    User, UserInfo, Company, Role
+    User, UserInfo, Company, Role, CompanyInfo
 }

@@ -15,10 +15,9 @@ export const deleteCompany = async (id) => {
 }
 
 
-// export const fetchCompany = async ( startDate, endDate,  valueMin, valueMax, capital, userId, page, limit= 5) => {
-export const fetchCompany = async ( startDate, endDate, capital, userId, page, limit= 5) => {
+export const fetchCompany = async ( startDate, endDate, valueMin, valueMax, userId,role, page, limit, nameSort, typeSort) => {
     const {data} = await $host.get('api/company', {params: {
-            startDate, endDate, capital, userId, page, limit
+            startDate, endDate, valueMin, valueMax, userId,role, page, limit,nameSort, typeSort
         }})
     return data
 }

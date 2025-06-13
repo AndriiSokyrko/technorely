@@ -3,15 +3,34 @@ import {makeAutoObservable} from "mobx";
 export default class CompanyStore {
     constructor() {
         this._company = []
-        this._page = 1
+        this._companyInfo = {}
         this._totalCount = 0
-        this._limit = 4
+        this._page = 1
+        this._limit = 2
         this._companyId = 1
         this._flagRdraw = 0
         this._minCapital = 0
-        this._maxCapital = 0
-
+        this._maxCapital = 1000000
+        this._nameSort ='name'
+        this._typeSort='asc'
+        this._startDate= null
+        this._endtDate= null
         makeAutoObservable(this)
+    }
+    setStartDate(startDate){
+        this._startDate=startDate
+    }
+    setCompanyIfo(companyInfo){
+        this._companyInfo= companyInfo
+    }
+    setEndDate(endDate){
+        this._endDate=endDate
+    }
+    setNameSort(nameSort){
+        this._nameSort = nameSort
+    }
+    setTypeSort(typeSort){
+        this._typeSort = typeSort
     }
 
     setCompany(company) {
@@ -22,13 +41,17 @@ export default class CompanyStore {
     setPage(page) {
         this._page = page
     }
-
-    setFlagRedraw(num) {
-        this._flagRdraw = num
+    setLimit(limit) {
+        this._limit = limit
     }
+
 
     setTotalCount(count) {
         this._totalCount = count
+    }
+
+    setFlagRedraw(num) {
+        this._flagRdraw = num
     }
 
     setMaxCapital(capital) {
@@ -42,7 +65,21 @@ export default class CompanyStore {
     setCompanyId(id) {
         this._companyId = id
     }
-
+    get  getCompanyIfo(){
+        return this._companyInfo
+    }
+    get getStartDate(){
+        return this._startDate
+    }
+    get getEndDate(){
+        return this._endDate
+    }
+    get getNameSort(){
+        return this._nameSort
+    }
+    get getTypeSort(){
+        return this._typeSort
+    }
     get minCapital() {
         return this._minCapital
     }
@@ -52,7 +89,7 @@ export default class CompanyStore {
     }
 
     get getCompanyId() {
-        return this._companyId
+        return this._company.find(it=>it.id= this._companyId)
     }
 
     get flagRedraw() {
