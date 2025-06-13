@@ -12,7 +12,7 @@ export default class UserStore {
         this._flagRedraw =0
         this._totalCount = 0
         this._page = 1
-        this._limit = 2
+        this._limit = 4
         makeAutoObservable(this)
     }
     setUserInfo(info){

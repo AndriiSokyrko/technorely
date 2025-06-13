@@ -26,7 +26,7 @@ const UserItem = observer(({users, onEdit}) => {
 
     return (
         <>
-            <Col md={3} className={"w-50 mt-3 d-flex align-items-stretch justify-items-between border-black"}
+            <Col md={3} className={"w-30 mt-3 d-flex align-items-stretch justify-items-between border-black"}
                 onClick={() => navigate(USER_ROUTE + '/' + users.id)}>
             <Card style={{width: "300px", height: "350px", cursor: 'pointer'}} border={"black"}
                   className="p-2 d-flex justify-content-between">

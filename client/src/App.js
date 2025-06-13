@@ -10,6 +10,7 @@ import {jwtDecode} from "jwt-decode";
 import ComponentSpinner from "./components/ComponentSpinner";
 import {observer} from "mobx-react";
 import {Spinner} from "react-bootstrap";
+import Footer from "./components/Footer";
 
 const App = observer (() => {
     const {user} = useContext(Context)
@@ -37,7 +38,9 @@ const App = observer (() => {
             <BrowserRouter>
                 <NavBar/>
                 <AppRouter/>
-             </BrowserRouter>
+                <Footer/>
+
+            </BrowserRouter>
     )
 });
 

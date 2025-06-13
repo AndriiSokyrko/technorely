@@ -8,11 +8,13 @@ import Sort from "../components/Sort";
 import CreateCompany from "../components/modals/CreateCompany";
 import UserList from "../components/UserList";
 import {Context} from "../index";
+import CreateAdmin from "../components/modals/CreateAdmin";
 
 const DashBoardAdmin = () => {
     const [companyVisible, setCompanyVisible] = useState(false)
     const [companyListVisible, setCompanyListVisible] = useState(true)
     const [userListVisible, setUserListVisible] = useState(false)
+    const [createAdminVisible, setCreateAdminVisible] = useState(false)
     const {user,company}= useContext(Context)
 
     const handleHide = () => {
@@ -47,6 +49,12 @@ const DashBoardAdmin = () => {
                         <Pages company={company}/>
                     </div> :
                     <div>
+                        { user.getUser.role ==='SUPERADMIN' && <div className="d-flex justify-content-between ">
+                             <Button variant={"outline-light"} className="bg-black text-white border-white"
+                                    onClick={() => setCreateAdminVisible(true)}>Создать админа</Button>
+                            <CreateAdmin show={createAdminVisible} onHide={() => setCreateAdminVisible(false)}/>
+                            </div>
+                        }
                         <UserList/>
                         <Pages company={user}/>
                     </div>

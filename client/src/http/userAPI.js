@@ -25,10 +25,9 @@ export const check = async () => {
 }
 
 
-export const createAdmin = async (email, password) =>{
-    const {data} = await $host.post('api/user/registration', {email, password, role: 'ADMIN'})
-    localStorage.setItem('token', data.token)
-    return jwtDecode(data.token)
+export const createAdmin = async (user) =>{
+    const {data} = await $host.post('api/user/admin', user)
+    return data
 }
 
 export const getUsers = async (page, limit) =>{

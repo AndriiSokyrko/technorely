@@ -17,14 +17,14 @@ const CompanyList = observer(() => {
     }
 
     useEffect(() => {
-        getUsers().then(data => {
+        getUsers(user.page, user.limit).then(data => {
                 user.setUsers(data.rows)
                 user.setTotalCount(data.count)
 
             }
         )
         user.setFlagRedraw(0)
-    }, [user.getFlagRedraw])
+    }, [ user.page, user.getFlagRedraw])
     return (
         <Row className="d-flex">
             {user.getUsers.map(user =>

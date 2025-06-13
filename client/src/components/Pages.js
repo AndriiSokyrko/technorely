@@ -6,6 +6,7 @@ import '../styles/page.css';
 
 const Pages = observer(({company}) => {
     // const {company} = useContext(Context)
+    console.log(company)
     const pageCount = Math.ceil(company.totalCount / company.limit)
     const pages = []
 
