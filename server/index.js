@@ -4,8 +4,8 @@ require('./models/models')
 const express = require('express')
 const sequelize = require('./db')
 const passport = require('passport')
-const bodyParser = require('body-parser')
-const keys = require('./config/config');
+require('./config/passport');
+
 const cors = require('cors')
 const fileUpload = require('express-fileupload')
 

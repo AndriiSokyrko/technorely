@@ -45,7 +45,7 @@ const Footer = observer(() => {
 
     return (
         <div bg="dark" variant="dark" className="d-flex bg-black w-100 align-items-center justify-content-center text-white mt-5 p-2">
-                <h2>@2025</h2>
+                <h2 style={{fontSize:"18px"}}>@2025</h2>
         </div>
 
     );
