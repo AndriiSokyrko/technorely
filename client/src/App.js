@@ -25,9 +25,11 @@ const App = observer (() => {
                 user.setIsAuth(true)
                 const infoUser = jwtDecode(token)
                 user.setCurrentUser(infoUser)
-                await getUserById(data.id).then(info=> {
-                    user.setCurrentUserIfo(info.user_info)
-                })
+                // if(data.message) {
+                //     await getUserById(data.id).then(info => {
+                //         user.setCurrentUserIfo(info.user_info)
+                //     })
+                // }
 
             }).finally(() => setLoading(false))
         }

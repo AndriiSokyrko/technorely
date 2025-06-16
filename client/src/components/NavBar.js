@@ -38,21 +38,21 @@ const NavBar = observer(() => {
     const handleResetPassword = () => {
         setResetVisible(true)
     }
-    useEffect(()=>{
-        getUserById(user.getCurrentUser.id).then(info=> {
-            user.setCurrentUserIfo(info.user_info)
-            user.setFlagRedrawUser(3)
-        })
-        user.setFlagRedrawUser(0)
+    // useEffect(()=>{
+        // getUserById(user.getCurrentUser.id).then(info=> {
+        //     user.setCurrentUserIfo(info.user_info)
+        //     user.setFlagRedrawUser(3)
+        // })
+        // user.setFlagRedrawUser(0)
         // setImg(user.getCurrentUserInfo.img)
-    },[user.setFlagRedrawUser])
+    // },[user.setFlagRedrawUser])
     return (
         <Navbar bg="dark" variant="dark">
             <EditProfile show={profileVisible} onHide={() => setProfileVisible(false)} userId={user.getCurrentUser.id}/>
             <ResetPassword show={resetVisible} onHide={() => setResetVisible(false)}/>
 
             <Container>
-                <NavLink to={user.isAuth && USER_ROUTE}>DashBoard</NavLink>
+                <NavLink to="/">DashBoard</NavLink>
                 {user.isAuth ?
                     <Nav >
                         {img &&

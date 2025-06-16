@@ -120,7 +120,7 @@ class UserController {
         const hashPassword = await bcrypt.hash(password, 5)
         let user = await User.create({email, password: hashPassword})
         if(!countUser) {
-            user = await User.create({email, password: hashPassword, role:'SUPERADMIN'})
+            user = await user.update({email, password: hashPassword, role:'SUPERADMIN'})
 
         }
         const token = generateJwt(user.id, user.email, user.role)
