@@ -32,11 +32,10 @@ export const createAdmin = async (user) =>{
 
 export const getUsers = async (page, limit) =>{
     const {data} = await $authHost.get('api/user/',{params: {page, limit}})
-    console.log(data)
     return data
 }
 export const deleteUser = async (id) =>{
-    const data = await $authHost.delete('api/user/${id}')
+    const {data} = await $authHost.delete(`api/user/${id}`)
     return data
 }
 export const getUserById = async (id) => {
@@ -44,7 +43,6 @@ export const getUserById = async (id) => {
     return data
 }
 export const editUser = async (user) => {
-    const res = Object.fromEntries(user.entries());
-    const {data} = await $authHost.patch(`api/user/${res.id}`, user)
+    const {data} = await $authHost.patch(`api/user/${user.id}`, user)
     return data
 }

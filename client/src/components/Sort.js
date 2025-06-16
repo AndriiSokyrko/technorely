@@ -11,10 +11,10 @@ const Sort = () => {
         typeSort === 'asc' ? setTypeSort('desc') : setTypeSort('asc')
         company.setNameSort(nameSort)
         company.setTypeSort(typeSort)
-        company.setFlagRedraw(2)
+        company.setFlagRedrawCompany(2)
     }
     return (
-        <ButtonGroup className="bg-dark border-black rounded-4">
+        <ButtonGroup className="bg-dark border-black rounded-2">
             <Button
                     variant={"outline-light"}
                     onClick={() => handleSort()}

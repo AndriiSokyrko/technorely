@@ -8,26 +8,27 @@ import {observer} from "mobx-react-lite";
 import Container from "react-bootstrap/Container";
 import {useNavigate} from 'react-router-dom'
 import EditProfile from "./modals/EditProfile";
-import {getUserById} from "../http/userAPI";
 import {getRoles} from "../http/roleApi";
 import Image from "react-bootstrap/Image";
 import ResetPassword from "./modals/resetPassword";
+import {getUserById} from "../http/userAPI";
 
 const NavBar = observer(() => {
-    const {user, roles} = useContext(Context)
+    const {user} = useContext(Context)
     const navigate = useNavigate()
     const [profileVisible, setProfileVisible] = useState()
     const [resetVisible, setResetVisible] = useState()
+    const [img,setImg] = useState(user.getCurrentUserInfo.img)
 
     const logOut = () => {
-        user.setUser({})
+        user.setCurrentUser({})
         user.setIsAuth(false)
         localStorage.removeItem('token')
         navigate(LOGIN_ROUTE)
     }
     const handleProfile = () => {
         getRoles().then(role => {
-            roles.setRole(role.data)
+            role.setRoles(role.data)
 
         }).catch(e => e.message)
 
@@ -37,23 +38,26 @@ const NavBar = observer(() => {
     const handleResetPassword = () => {
         setResetVisible(true)
     }
-    useEffect(() => {
-        getUserById(user.getUser.id).then(data => {
-            user.setUserInfo(data.user_info)
-        }).catch(e => console.log(e.message))
-    }, [])
+    useEffect(()=>{
+        getUserById(user.getCurrentUser.id).then(info=> {
+            user.setCurrentUserIfo(info.user_info)
+            user.setFlagRedrawUser(3)
+        })
+        user.setFlagRedrawUser(0)
+        // setImg(user.getCurrentUserInfo.img)
+    },[user.setFlagRedrawUser])
     return (
         <Navbar bg="dark" variant="dark">
-            <EditProfile show={profileVisible} onHide={() => setProfileVisible(false)}/>
+            <EditProfile show={profileVisible} onHide={() => setProfileVisible(false)} userId={user.getCurrentUser.id}/>
             <ResetPassword show={resetVisible} onHide={() => setResetVisible(false)}/>
 
             <Container>
                 <NavLink to={user.isAuth && USER_ROUTE}>DashBoard</NavLink>
                 {user.isAuth ?
                     <Nav >
-                        {user.getUserInfo.img &&
+                        {img &&
                             <Image className="rounded-2 me-2 mt-2" width="25px" height="25px"
-                                   src={process.env.REACT_APP_API_URL + user.getUserInfo.img}/>
+                                   src={process.env.REACT_APP_API_URL +  img}/>
                         }
                         <Dropdown className="border-4 border-white bg-black">
                             <Dropdown.Toggle variant={"outline-light"} id="dropdown-basic">

@@ -19,7 +19,12 @@ const Auth = observer(() => {
     const click = async () => {
         try {
             if (isLogin) {
-                 await login(email, password);
+                try {
+                    await login(email, password);
+                } catch (e){
+                    alert('Пользователь не авторизирован')
+
+                }
 
             } else {
                 const token = await registration(email, password);

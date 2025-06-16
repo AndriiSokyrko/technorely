@@ -12,7 +12,7 @@ function hasExtension(filePath, extension) {
 
 class CompanyController {
 
-    async create(req, res, next) {
+    async createCompany(req, res, next) {
         try {
             let {name, description, service, capital, userId, info} = req.body
             const flag = await Company.findOne({where:{name}})
@@ -42,15 +42,14 @@ class CompanyController {
                     userId
                 }
             )
-
             if (info) {
                 info = JSON.parse(info)
                     CompanyInfo.create({
                         companyId: company.id,
                         pricePolitic1kv:info.pricePolitic1kv,
                         pricePolitic2kv:info.pricePolitic2kv,
-                        pricePolitic3kv:info.pricePolitic2kv,
-                        pricePolitic4kv:info.pricePolitic2kv,
+                        pricePolitic3kv:info.pricePolitic3kv,
+                        pricePolitic4kv:info.pricePolitic4kv,
                     })
             }
             return res.json(company)
@@ -96,31 +95,34 @@ class CompanyController {
                 limit,
                 offset
             });
-            return res.json(companies)
+            return res.status(200).json(companies)
         } catch (e) {
-            next(apiError.badRequest(e.message))
+            next(apiError.badRequest('Companies are not found'))
         }
 
     }
 
-    async getOne(req, res, next) {
+    async getCompanyById(req, res, next) {
         const {id} = req.params
         try {
             const company = await Company.findOne({
                 where: {id},
                 include: [{ model: CompanyInfo }]
             })
-            return res.json(company)
+            return res.status(200).json(company)
         } catch (e) {
-            return next(apiError.badRequest(e.message))
+            return next(apiError.badRequest('Company is not found'))
         }
     }
 
-    async updateById(req, res) {
-        const id = req.params.id;
-        let updates = req.body;
-        const {info} = req.body.info
-        let fileName;
+    async updateCompanyById(req, res) {
+        const {id} = req.params;
+        let updates = req.body
+        let info =req.body.info
+        if (info) {
+              info = JSON.parse(info)
+
+        }
         if(req.files) {
             const {img} = req.files
             const filePath = path.resolve(__dirname, '..', 'static', img.name);
@@ -128,28 +130,28 @@ class CompanyController {
                 await img.mv(filePath);
             }
 
-            fileName = img.name
+            const fileName = img.name
             updates = {...updates,img:fileName}
         }
         try {
             const company = await Company.findByPk(id);
 
             if (!company) {
-                return next(apiError.badRequest('No user found with this ID'))
+                return next(apiError.badRequest('Company by id is not found'))
             }
-            console.log(req.body)
+
             await company.update(updates);
-            const companyInfo = await CompanyInfo.findOne({where: {companyId:id}});
-            await companyInfo.update(info);
+            const companyInfo = await CompanyInfo.findOne({where: {companyId:company.id}});
+            if(info) await companyInfo.update(info);
 
             res.status(200).json(company);
         } catch (error) {
-            return next(apiError.badRequest('Error updating user:', error))
+            return next(apiError.badRequest('Error of server:', error))
 
         }
     }
 
-    async deleteById(req, res, next) {
+    async deleteCompanyById(req, res, next) {
         const {id} = req.params;
         try {
             const result = await Company.destroy({
@@ -159,11 +161,11 @@ class CompanyController {
             })
 
             if (result === 0) {
-                return next(apiError.badRequest('No company found with this ID'))
+                return res.status(400).json({message:'Company by id is not found.'})
             }
-            return res.status(200).json({text: "Ok"})
+            return res.status(200).json({message: "Company is deleted"})
         } catch (error) {
-            return next(apiError.badRequest('Error deleting company:', error))
+            return next(apiError.badRequest('Error of server:', error))
 
         }
 

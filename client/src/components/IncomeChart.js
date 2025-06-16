@@ -4,10 +4,10 @@ import {Context} from "../index";
 
 const IncomeChart = ({info}) => {
     const data = [
-        { quarter: 'Q1', income: info.pricePolitic1kv, expenses: 2400 },
-        { quarter: 'Q2', income: info.pricePolitic2kv, expenses: 1398 },
-        { quarter: 'Q3', income: info.pricePolitic3kv, expenses: 9800 },
-        { quarter: 'Q4', income: info.pricePolitic4kv, expenses: 3908 },
+        { quarter: 'Qv1', income: info.pricePolitic1kv, expenses: (info.pricePolitic1kv/5) },
+        { quarter: 'Qv2', income: info.pricePolitic2kv, expenses: (info.pricePolitic2kv/5) },
+        { quarter: 'Qv3', income: info.pricePolitic3kv, expenses: (info.pricePolitic3kv/5) },
+        { quarter: 'Qv4', income: info.pricePolitic4kv, expenses: (info.pricePolitic4kv/5) },
     ];
 
     return (

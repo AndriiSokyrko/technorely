@@ -5,9 +5,9 @@ class RoleController {
     async getAll(req, res, next) {
         try{
             const users = await Role.findAll()
-            return res.json(users)
+            return res.status(200).json(users)
         } catch(e){
-            return next(apiError.badRequest('Error no rolles:', e))
+            return next(apiError.badRequest('Error no roles:', e))
         }
 
     }

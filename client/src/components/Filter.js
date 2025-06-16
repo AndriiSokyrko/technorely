@@ -17,11 +17,10 @@ const Filter = observer(() => {
     const handleFilter = () => {
         company.setMinCapital(valueMin)
         company.setMaxCapital(valueMax)
-        company.setFlagRedraw(3)
         company.setPage(1)
         company.setStartDate(startDate)
         company.setEndDate(endDate)
-        company.setFlagRedraw(2)
+        company.setFlagRedrawCompany(2)
 
     };
     const handleClear = () => {
@@ -33,7 +32,7 @@ const Filter = observer(() => {
         setValueMax(company.maxCapital)
         company.setStartDate(null)
         company.setEndDate(null)
-        company.setFlagRedraw(3)
+        company.setFlagRedrawCompany(3)
 
     };
     const handleChangeMin = (event) => {

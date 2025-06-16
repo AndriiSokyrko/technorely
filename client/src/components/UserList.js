@@ -5,14 +5,15 @@ import {Row} from "react-bootstrap";
 import {getUsers} from "../http/userAPI";
 import EditProfile from "./modals/EditProfile";
 import UserItem from "./UserItem";
+import {getRoles} from "../http/roleApi";
 
-const CompanyList = observer(() => {
+const UserList = observer(() => {
     const {user} = useContext(Context)
     const [userVisible, setUserVisible] = useState(false)
-    const [userId, setUserId] = useState(false)
+    const [userId, setUserId] = useState(user.getCurrentUser.id)
 
-    const handleEdit = (id) => {
-        setUserId(id)
+    const handleEdit = (userId) => {
+        setUserId(userId)
         setUserVisible(true)
     }
 
@@ -20,19 +21,19 @@ const CompanyList = observer(() => {
         getUsers(user.page, user.limit).then(data => {
                 user.setUsers(data.rows)
                 user.setTotalCount(data.count)
-
             }
         )
-        user.setFlagRedraw(0)
-    }, [ user.page, user.getFlagRedraw])
-    return (
+        user.setFlagRedrawUser(0)
+    }, [ user.page, user.flagRedrawUser])
+
+return (
         <Row className="d-flex">
-            {user.getUsers.map(user =>
-                 <UserItem key={user.id} users={user} onEdit={handleEdit}/>
+            {user.getUsers.map(userData =>
+                 <UserItem key={userData.id} userData={userData} onEdit={handleEdit}/>
             )}
             <EditProfile show={userVisible} onHide={() => setUserVisible(false)} userId={userId}/>
         </Row>
     );
 });
 
-export default CompanyList;
+export default UserList;

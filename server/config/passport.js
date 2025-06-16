@@ -20,6 +20,6 @@ passport.use('jwt',new Strategy(opts, async (token, done) => {
             return done(null, false);
         }
     } catch (error) {
-        return done(error, false);
+        return done('Authentication is necessary: '+error, false);
     }
 }));

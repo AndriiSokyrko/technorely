@@ -4,7 +4,7 @@ require('./models/models')
 const express = require('express')
 const sequelize = require('./db')
 const passport = require('passport')
-require('./config/passport');
+require('./config/passport')
 
 const cors = require('cors')
 const fileUpload = require('express-fileupload')
@@ -17,12 +17,15 @@ const errorHandler = require('./middleware/errorHandlerMiddleware')
 
 const path = require('path')
 
+
 app.use(cors())
 app.use(express.json())
 app.use(express.static(path.resolve(__dirname,'static')))
 app.use(fileUpload({}))
 app.use('/api',router)
 app.use(errorHandler)
+
+app.use('/api-docs', express.static(path.join(__dirname, 'swagger')));
 
 const start = async ()=>{
     try {

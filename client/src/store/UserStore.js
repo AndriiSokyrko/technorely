@@ -6,10 +6,12 @@ export const queryClient = new QueryClient();
 export default class UserStore {
     constructor() {
         this._isAuth = false
-        this._user = {}
+        this._currentUser = {}
+        this._userId = 0
         this._users = []
         this._usersInfo = []
-        this._flagRedraw =0
+        this._currentUserInfo = {}
+        this._flagRedrawUser =0
         this._totalCount = 0
         this._page = 1
         this._limit = 4
@@ -18,15 +20,21 @@ export default class UserStore {
     setUserInfo(info){
         this._usersInfo = info
     }
-    setFlagRedraw(num){
-        this._flagRedraw = num
+    setFlagRedrawUser(num){
+        this._flagRedrawUser = num
     }
 
     setIsAuth(bool) {
         this._isAuth = bool
     }
-    setUser(user) {
-        this._user = user
+    setCurrentUser(user) {
+        this._currentUser = user
+    }
+    setCurrentUserIfo(info) {
+        this._currentUserInfo = info
+    }
+    setUserId(id) {
+          this._userId =id
     }
     setUsers(users) {
         this._users=users
@@ -37,16 +45,23 @@ export default class UserStore {
     setLimit(limit) {
         this._limit = limit
     }
-
-
     setTotalCount(count) {
         this._totalCount = count
     }
     get isAuth() {
         return this._isAuth
     }
-    get getUser() {
-        return this._user
+    get getCurrentUser() {
+        return this._currentUser
+    }
+    get getCurrentUserInfo() {
+        return this._currentUserInfo
+    }
+    get getUserId() {
+       return this._userId
+    }
+    get getUserById() {
+        return this._users.find(user=>user.id===this._userId)
     }
     get getUsers() {
         return this._users
@@ -54,8 +69,8 @@ export default class UserStore {
     get getUserInfo(){
         return this._usersInfo
     }
-    get getflagRedraw(){
-        return this._flagRedraw
+    get flagRedrawUser(){
+        return this._flagRedrawUser
     }
     get totalCount() {
         return this._totalCount

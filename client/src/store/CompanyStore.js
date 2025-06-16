@@ -8,7 +8,7 @@ export default class CompanyStore {
         this._page = 1
         this._limit = 2
         this._companyId = 1
-        this._flagRdraw = 0
+        this._flagRdrawCompany = 0
         this._minCapital = 0
         this._maxCapital = 1000000
         this._nameSort ='name'
@@ -50,8 +50,8 @@ export default class CompanyStore {
         this._totalCount = count
     }
 
-    setFlagRedraw(num) {
-        this._flagRdraw = num
+    setFlagRedrawCompany(num) {
+        this._flagRdrawCompany = num
     }
 
     setMaxCapital(capital) {
@@ -92,8 +92,8 @@ export default class CompanyStore {
         return this._company.find(it=>it.id= this._companyId)
     }
 
-    get flagRedraw() {
-        return this._flagRdraw
+    get flagRedrawCompany() {
+        return this._flagRdrawCompany
     }
 
     get getCompany() {

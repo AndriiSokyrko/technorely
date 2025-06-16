@@ -21,10 +21,13 @@ const App = observer (() => {
         if(!token) {
             setLoading(false)
         } else {
-            check().then(data => {
+            check().then(async(data) => {
                 user.setIsAuth(true)
                 const infoUser = jwtDecode(token)
-                user.setUser(infoUser)
+                user.setCurrentUser(infoUser)
+                await getUserById(data.id).then(info=> {
+                    user.setCurrentUserIfo(info.user_info)
+                })
 
             }).finally(() => setLoading(false))
         }

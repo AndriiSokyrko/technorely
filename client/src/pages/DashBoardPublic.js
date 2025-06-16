@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, Container, Row} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import CompanyList from "../components/CompanyList";
@@ -9,9 +9,19 @@ import Sort from "../components/Sort";
 import {observer} from "mobx-react";
 import {Context} from "../index";
 
+import {getRoles} from "../http/roleApi";
+
 const DashBoardPublic = observer(() => {
     const [companyVisible, setCompanyVisible] = useState(false)
-    const {company}= useContext(Context)
+    const {company,user,role}= useContext(Context)
+
+    useEffect(() => {
+        getRoles().then(data => {
+            role.setRoles(data)
+            role.setFlagRedrawRole(3)
+        })
+    },[user.page, user.getFlagRedrawRole])
+
     return (
         <Container>
             <h2>Public DashBoard</h2>
@@ -21,8 +31,8 @@ const DashBoardPublic = observer(() => {
                 </Col>
                 <Col md={9}>
                     <div className="d-flex justify-content-between ">
-                        <Button variant={"outline-light"} className="bg-black text-white border-white"
-                                onClick={() => setCompanyVisible(true)}>Добавить компанию</Button>
+                        <div className="bg-black text-white border-white rounded-2 border-white" >
+                            <Button variant={"outline-light"}  onClick={() => setCompanyVisible(true)}>Добавить компанию</Button></div>
                         <Sort />
                         <CreateCompany show={companyVisible} onHide={() => setCompanyVisible(false)}/>
                     </div>

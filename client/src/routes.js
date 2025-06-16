@@ -3,7 +3,7 @@ import {
     COMPANY_ROUTE,
     COMPANY_EDIT_ROUTE,
     LOGIN_ROUTE,
-    REGISTRATION_ROUTE, USER_EDIT_ROUTE, USER_ROUTE, ROOT_ROUTE
+    REGISTRATION_ROUTE, USER_EDIT_ROUTE, USER_ROUTE, ROOT_ROUTE, API_DOCS_ROUTE
 } from "./utils/consts";
 import Auth from "./pages/Auth";
 import DashBoardPublic from "./pages/DashBoardPublic";
@@ -12,6 +12,7 @@ import CreateCompany from "./components/modals/CreateCompany";
 import EditCompany from "./components/modals/EditCompany";
 import EditProfile from "./components/modals/EditProfile";
 import Root from "./components/Root";
+import SwaggerComponent from "./components/SwaggerComponent";
 
 export const adminRoutes= [
     {
@@ -41,6 +42,14 @@ export const adminRoutes= [
 
 ]
 export const publicRoutes= [
+    {
+        path: ROOT_ROUTE,
+        Component: Auth
+    },
+    {
+      path: API_DOCS_ROUTE,
+      Component: SwaggerComponent
+    },
     {
         path: ROOT_ROUTE,
         Component: Auth

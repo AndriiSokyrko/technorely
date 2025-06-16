@@ -2,21 +2,21 @@ import {makeAutoObservable} from "mobx";
 
 export default class RoleStore {
     constructor() {
-        this._role = []
-        this._flagRedraw =0
+        this._roles = []
+        this._flagRedrawRole =0
         makeAutoObservable(this)
     }
-    setRole(payload) {
-        this._role = payload
+    setRoles(payload) {
+        this._roles = payload
     }
-    setFlagRedraw(num){
-        this._flagRedraw = num
+    setFlagRedrawRole(num){
+        this._flagRedrawRole = num
     }
-    get getFlagRedraw(){
-        return this._flagRedraw
+    get getFlagRedrawRole(){
+        return this._flagRedrawRole
     }
-    get getRole() {
-        return this._role
+    get getRoles() {
+        return this._roles
     }
 
 }

@@ -9,11 +9,11 @@ import Col from "react-bootstrap/Col";
 
 const EditCompany = observer(({show, onHide, companyId}) => {
     const {company, user} = useContext(Context)
-    const [name, setName] = useState('')
-    const [description, setDescription] = useState('')
-    const [service, setService] = useState('')
+    const [name, setName] = useState("")
+    const [description, setDescription] = useState("")
+    const [service, setService] = useState("")
     const [capital, setCapital] = useState(0)
-    const [img, setImg] = useState('')
+    const [img, setImg] = useState("")
     const [info, setInfo] = useState({})
     const selectFile = e => {
         setImg(e.target.files[0])
@@ -26,12 +26,12 @@ const EditCompany = observer(({show, onHide, companyId}) => {
         formData.append('description', description)
         formData.append('capital', capital)
         formData.append('img', img)
-        formData.append('userId', user.getUser.id)
+        formData.append('userId', user.getCurrentUser.id)
         formData.append('id', companyId)
         formData.append('info', JSON.stringify(info))
         editCompany(formData).then(_ => {
             onHide()
-            company.setFlagRedraw(1)
+            company.setFlagRedrawCompany(1)
             alert('Company is updated')
         }).catch((e) => {
             alert(e.message)
@@ -39,6 +39,7 @@ const EditCompany = observer(({show, onHide, companyId}) => {
     }
     const handleInfoChange = (key, value) => {
         info[key]=value
+        setInfo({...info})
     }
     useEffect(() => {
         if (companyId) {
@@ -51,6 +52,7 @@ const EditCompany = observer(({show, onHide, companyId}) => {
                 setImg((data.img))
                 Object.keys(data.company_info).forEach(key=>{
                     info[key]=data.company_info[key]
+                    setInfo(info)
                 })
         }
     }, [companyId])
@@ -106,7 +108,7 @@ const EditCompany = observer(({show, onHide, companyId}) => {
                         <Col md={3}>
                             <Form.Control
                                 value={info['pricePolitic1kv']}
-                                onChange={ (e)=>handleInfoChange( 'pricePolitic1kv', e.target.value)}
+                                onChange={ e=>handleInfoChange( 'pricePolitic1kv', e.target.value)}
                                 placeholder="Введите ценовую политику 1 кв"
                                 type="number"
                             />
@@ -114,7 +116,7 @@ const EditCompany = observer(({show, onHide, companyId}) => {
                         <Col md={3}>
                             <Form.Control
                                 value={info['pricePolitic2kv']}
-                                onChange={ (e)=>handleInfoChange( 'pricePolitic2kv', e.target.value)}
+                                onChange={ e=>handleInfoChange( 'pricePolitic2kv', e.target.value)}
                                 placeholder="Введите ценовую политику 2 кв"
                                 type="number"
                             />
@@ -122,7 +124,7 @@ const EditCompany = observer(({show, onHide, companyId}) => {
                         <Col md={3}>
                             <Form.Control
                                 value={info['pricePolitic3kv']}
-                                onChange={ (e)=>handleInfoChange( 'pricePolitic3kv', e.target.value)}
+                                onChange={ e=>handleInfoChange( 'pricePolitic3kv', e.target.value)}
                                 placeholder="Введите ценовую политику 3 кв"
                                 type="number"
                             />
@@ -130,7 +132,7 @@ const EditCompany = observer(({show, onHide, companyId}) => {
                         <Col md={3}>
                             <Form.Control
                                 value={info['pricePolitic4kv']}
-                                onChange={ (e)=>handleInfoChange( 'pricePolitic4kv', e.target.value)}
+                                onChange={ e=>handleInfoChange( 'pricePolitic4kv', e.target.value)}
                                 placeholder="Введите ценовую политику 4 кв"
                                 type="number"
                             />

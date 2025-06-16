@@ -4,20 +4,21 @@ import {Button, Dropdown, Form} from "react-bootstrap";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
 import {createAdmin, editUser, getUserById} from "../../http/userAPI";
+import toast from "react-hot-toast";
 
 const CreateAdmin = observer(({show, onHide}) => {
-    const {user, roles} = useContext(Context)
+    const {user, role} = useContext(Context)
     const [email, setEmail] = useState('')
     const [description, setDescription] = useState('')
-    const [role, setRole] = useState('ADMIN')
-    const [img, setImg] = useState(null)
+    const [roleInfo, setRoleInfo] = useState('ADMIN')
+    const [img, setImg] = useState('')
     const [password, setPassword] = useState('')
     const [reset, setReset] = useState(false)
 
     const saveUser = () => {
         const formData = new FormData()
         formData.append('email', email)
-        formData.append('role', role)
+        formData.append('role', roleInfo)
         formData.append('password', password)
         formData.append('description', description)
         formData.append('img', img)
@@ -27,8 +28,9 @@ const CreateAdmin = observer(({show, onHide}) => {
         }
         createAdmin(formData).then(_ => {
             onHide()
-            user.setFlagRedraw(1)
-            alert('Сохранено')
+            user.setFlagRedrawUser(3)
+            // alert('Сохранено')
+            toast.success('Сохранено!')
         }).catch(e => alert(e.message))
     }
     const selectFile = e => {
@@ -58,15 +60,15 @@ const CreateAdmin = observer(({show, onHide}) => {
                         className="mt-3"
                         placeholder="Введите email"
                     />
-                    {user.getUser.role !== 'USER' &&
+                    {user.getCurrentUser.role !== 'USER' &&
                         <div className="d-flex flex-row align-items-center justify-content-center">
                             {/*<Form.Label className=" mt-2 mb-0 p-0">Роли</Form.Label>*/}
                             <Dropdown className="me-2 mt-3">
                                 <Dropdown.Toggle>{"Выберите роль"}</Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    {roles.getRole.map(role =>
+                                    {role.getRoles.map(role =>
                                         <Dropdown.Item
-                                            onClick={() => setRole(role.name)}
+                                            onClick={() => setRoleInfo(role.name)}
                                             key={role.id}
                                         >
                                             {role.name}
@@ -76,8 +78,8 @@ const CreateAdmin = observer(({show, onHide}) => {
                             </Dropdown>
                             <Form.Control
                                 disabled="disable"
-                                value={role}
-                                onChange={e => setEmail(e.target.value)}
+                                value={roleInfo}
+                                onChange={e => setRoleInfo(e.target.value)}
                                 className="mt-3"
                                 placeholder="Введите email"
                             />

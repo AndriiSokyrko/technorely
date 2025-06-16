@@ -15,7 +15,7 @@ const CompanyItem = observer(({comp, onEdit}) => {
     const handleDelete = (id) => {
         deleteCompany(id).then(_ => {
             alert(_.text)
-            company.setFlagRedraw(2)
+            company.setFlagRedrawCompany(2)
         })
 
     }
@@ -25,8 +25,7 @@ const CompanyItem = observer(({comp, onEdit}) => {
 
     return (
         <>
-            <Col md={3} className={"w-50 mt-3 d-flex align-items-stretch justify-items-between border-black"}
-                onClick={() => navigate(USER_ROUTE + '/' + comp.id)}>
+            <Col md={3} className={"w-50 mt-3 d-flex align-items-stretch justify-items-between border-black"}>
             <Card style={{width: "300px", height: "350px", cursor: 'pointer'}} border={"black"}
                   className="p-2 d-flex justify-content-between">
                 <Image width="100%" height="50%" src={process.env.REACT_APP_API_URL + comp.img}/>

@@ -1,5 +1,6 @@
 export const ROOT_ROUTE = '/'
 export const ADMIN_ROUTE = '/admin'
+export const API_DOCS_ROUTE = 'http://localhost:5000/api-docs/swaggerCompany.yaml'
 export const USER_ROUTE = '/user'
 export const LOGIN_ROUTE = '/login'
 export const COMPANY_ROUTE = '/company'

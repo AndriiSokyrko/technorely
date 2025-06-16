@@ -13,7 +13,7 @@ const Root = observer(() => {
 
     useEffect(() => {
         if (user.isAuth) {
-            if(user.getUser.role!== 'USER'){
+            if(user.getCurrentUser.role!== 'USER'){
                 navigate(ADMIN_ROUTE);
             }else{
                 navigate(USER_ROUTE);
