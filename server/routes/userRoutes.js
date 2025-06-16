@@ -12,8 +12,8 @@ router.post('/admin', userController.create)
 // router.get('/auth', authMiddleware, userController.auth)
 router.get('/auth',  passport.authenticate('jwt', { session: false }), userController.auth)
 // router.get('/', authMiddleware, userController.getAll)
-router.get('/', passport.authenticate('jwt', { session: false }), userController.getAllUsers)
+router.get('/', passport.authenticate('role', { session: false }), userController.getAllUsers)
 router.get('/:id', userController.getByUserId);
-router.patch('/:id', passport.authenticate('jwt', { session: false }),userController.editByUserId);
-router.delete('/:id', passport.authenticate('jwt', { session: false }),userController.deleteByUserId);
+router.patch('/:id',userController.editByUserId);
+router.delete('/:id', userController.deleteByUserId);
 module.exports = router
