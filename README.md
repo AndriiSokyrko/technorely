@@ -20,7 +20,7 @@
 - [Mobix](https://mobx.js.org/)
 - Валидация форм на сервере
 
-### 🛠 Server (Backend)
+###  Server (Backend)
 - [Express](https://expressjs.com/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [JWT](https://jwt.io/) + [Passport](http://www.passportjs.org/)
