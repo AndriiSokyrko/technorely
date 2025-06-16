@@ -40,12 +40,12 @@ const DashBoardAdmin = () => {
             <h2>Admin DashBoard</h2>
             <Row className="mt-2">
                 <Col md={3}>
-                    <Form bg="dark" className="d-flex flex-column bg-black p-2 mt-2  align-items-center">
+                    <div bg="dark" className="d-flex flex-column bg-black p-2 mt-2  align-items-center">
                         {
                             Object.keys(visible).map(key=>{
                                 if ( key==='company' && visible[key]===true)
                                 {
-                                    return (<Filter/>)
+                                    return (<Filter key={key}/>)
                                 }
                                 if (key==='user' && visible[key]===false)
                                 {
@@ -73,7 +73,7 @@ const DashBoardAdmin = () => {
                             })
 
                         }
-                    </Form>
+                    </div>
                 </Col>
                 <Col md={9}>
                     {

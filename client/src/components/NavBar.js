@@ -18,7 +18,7 @@ const NavBar = observer(() => {
     const navigate = useNavigate()
     const [profileVisible, setProfileVisible] = useState()
     const [resetVisible, setResetVisible] = useState()
-    const [img,setImg] = useState(user.getCurrentUserInfo.img)
+    const [img,setImg] = useState('')
 
     const logOut = () => {
         user.setCurrentUser({})
@@ -38,14 +38,13 @@ const NavBar = observer(() => {
     const handleResetPassword = () => {
         setResetVisible(true)
     }
-    // useEffect(()=>{
-        // getUserById(user.getCurrentUser.id).then(info=> {
-        //     user.setCurrentUserIfo(info.user_info)
-        //     user.setFlagRedrawUser(3)
-        // })
-        // user.setFlagRedrawUser(0)
-        // setImg(user.getCurrentUserInfo.img)
-    // },[user.setFlagRedrawUser])
+    useEffect(  ()=>{
+          getUserById(user.getCurrentUser.id).then(info => {
+            user.setCurrentUserIfo(info.user_info)
+              setImg(info.user_info.img)
+        })
+
+    },[user.flagRedrawUser])
     return (
         <Navbar bg="dark" variant="dark">
             <EditProfile show={profileVisible} onHide={() => setProfileVisible(false)} userId={user.getCurrentUser.id}/>

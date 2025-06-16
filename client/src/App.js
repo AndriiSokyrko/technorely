@@ -9,43 +9,36 @@ import {Context} from "./index";
 import {jwtDecode} from "jwt-decode";
 import ComponentSpinner from "./components/ComponentSpinner";
 import {observer} from "mobx-react";
-import {Spinner} from "react-bootstrap";
+import {Container, Spinner} from "react-bootstrap";
 import Footer from "./components/Footer";
 
-const App = observer (() => {
+const App = observer(() => {
     const {user} = useContext(Context)
     const [loading, setLoading] = useState(true)
     const token = localStorage.getItem('token');
 
     useEffect(() => {
-        if(!token) {
+        if (!token) {
             setLoading(false)
         } else {
-            check().then(async(data) => {
+            check().then(async (data) => {
                 user.setIsAuth(true)
                 const infoUser = jwtDecode(token)
                 user.setCurrentUser(infoUser)
-                // if(data.message) {
-                //     await getUserById(data.id).then(info => {
-                //         user.setCurrentUserIfo(info.user_info)
-                //     })
-                // }
-
             }).finally(() => setLoading(false))
         }
     }, [token, user])
     if (loading) {
         // return <ComponentSpinner/>
-        return <div className="d-flex align-items-center w-100 h-50"><Spinner  animation="grow"/></div>;
+        return <div style={{width: "100px", height: "100px", margin: "auto"}}
+                    className="d-flex flex-column justify-content-center"><Spinner animation="grow"/></div>;
     }
     return (
-
-            <BrowserRouter>
-                <NavBar/>
-                <AppRouter/>
-                <Footer/>
-
-            </BrowserRouter>
+        <BrowserRouter>
+            <NavBar/>
+            <AppRouter/>
+            <Footer/>
+        </BrowserRouter>
     )
 });
 

@@ -11,7 +11,7 @@ const EditProfile = observer(({show, onHide, userId}) => {
     const [description, setDescription] = useState(user.getCurrentUserInfo.description)
     const [roleUser, setRoleUser] = useState(user.getCurrentUser.role)
     const [img, setImg] = useState('')
-    const saveUser = () => {
+    const saveUser = async () => {
         const formData = new FormData()
         formData.append('id', user.getCurrentUser.id)
         formData.append('email', email)
@@ -22,8 +22,9 @@ const EditProfile = observer(({show, onHide, userId}) => {
         const selectFile = e => {
             setImg(e.target.files[0])
         }
-        editUser(formData).then(_ => {
+        await editUser(formData).then(info => {
             onHide()
+            user.setUpdateUserById(info)
             user.setFlagRedrawUser(3)
             alert('Сохранено')
         }).catch(e => {
@@ -35,6 +36,10 @@ const EditProfile = observer(({show, onHide, userId}) => {
         setImg(e.target.files[0])
     }
     useEffect(()=>{
+        setEmail(user.getCurrentUser.email)
+        setRoleUser(user.getCurrentUser.role)
+        setDescription(user.getCurrentUserInfo.description)
+
         if(userId!==user.getCurrentUser.id ){
             user.setUserId(userId)
             const userData = user.getUserById
@@ -44,11 +49,9 @@ const EditProfile = observer(({show, onHide, userId}) => {
                 setDescription(userData.user_info.description)
             }
 
-        } else {
-            setEmail(user.getCurrentUser.email)
-            setRoleUser(user.getCurrentUser.role)
-            setDescription(user.getCurrentUserInfo.description)
         }
+
+
     },[userId])
     return (
         <Modal
