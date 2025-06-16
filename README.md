@@ -60,15 +60,15 @@
 ```bash
 cd client
 npm install
-npm run dev
+npm run start
 ```
 
-### 🖥 Сервер
+###  Сервер
 
 ```bash
 cd server
 npm install
-npm run start:dev
+npm run start dev
 ```
 
 > Убедитесь, что PostgreSQL установлен и настроен.
