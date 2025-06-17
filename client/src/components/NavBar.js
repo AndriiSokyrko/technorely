@@ -2,8 +2,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Context} from "../index";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import {LOGIN_ROUTE, USER_ROUTE} from "../utils/consts";
-import {Button, Dropdown, DropdownButton, NavLink} from "react-bootstrap";
+import {LOGIN_ROUTE} from "../utils/consts";
+import {Button, Dropdown, NavLink} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import Container from "react-bootstrap/Container";
 import {useNavigate} from 'react-router-dom'
@@ -47,7 +47,7 @@ const NavBar = observer(() => {
     },[user.flagRedrawUser])
     return (
         <Navbar bg="dark" variant="dark">
-            <EditProfile show={profileVisible} onHide={() => setProfileVisible(false)} userId={user.getCurrentUser.id}/>
+            <EditProfile show={profileVisible} onHide={() => setProfileVisible(false)} userData={{...user.getCurrentUser,user_info:user.getCurrentUserInfo }}/>
             <ResetPassword show={resetVisible} onHide={() => setResetVisible(false)}/>
 
             <Container>

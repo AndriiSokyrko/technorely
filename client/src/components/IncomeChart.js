@@ -1,6 +1,5 @@
 import React, {useContext} from 'react';
 import {Bar, CartesianGrid, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import {Context} from "../index";
 
 const IncomeChart = ({info}) => {
     const data = [

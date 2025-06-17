@@ -22,10 +22,10 @@ function hasExtension(fileName) {
 
 class UserController {
 
-    async editByUserId(req, res, next) {
+    async updateByUserId(req, res, next) {
         let {id, email, role, description} = req.body
         let fileName;
-        const user = await User.findOne({where: {email}});
+        const user = await User.findOne({where: {id}});
 
         if (!user) {
             return next(apiError.badRequest('No user found with this ID'))

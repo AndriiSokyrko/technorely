@@ -64,11 +64,9 @@ class CompanyController {
         page = page || 1
         limit = limit || 9
         let offset = page * limit - limit
-        let companies
-        if(userId) companies =await Company.findByPk(userId)
         try {
             const whereConditions = {};
-            if (userId && role=='USER' ) {
+            if (userId ) {
                 whereConditions.userId = userId;
             }
 
@@ -88,7 +86,7 @@ class CompanyController {
             if (nameSort !== undefined && typeSort !== undefined) {
                 order = [nameSort, typeSort]
             }
-            companies = await Company.findAndCountAll({
+            const companies = await Company.findAndCountAll({
                 where: whereConditions,
                 order: order.length ? [order] : undefined,
                 include: [{model: CompanyInfo}],

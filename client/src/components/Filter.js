@@ -3,11 +3,10 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {Form, Button} from "react-bootstrap";
 import {Context} from "../index";
-import {fetchCompany} from "../http/companyAPI";
 import {observer} from "mobx-react";
 
 const Filter = observer(() => {
-    const {user,company} = useContext(Context)
+    const {company} = useContext(Context)
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);

@@ -1,16 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {BrowserRouter} from "react-router-dom";
-// import {QueryClientProvider} from "@tanstack/react-query";
-// import {queryClient} from "./store/UserStore";
 import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
 import {check, getUserById} from "./http/userAPI";
 import {Context} from "./index";
 import {jwtDecode} from "jwt-decode";
-import ComponentSpinner from "./components/ComponentSpinner";
 import {observer} from "mobx-react";
-import {Container, Spinner} from "react-bootstrap";
+import {Spinner} from "react-bootstrap";
 import Footer from "./components/Footer";
+import {Toaster} from "react-hot-toast";
 
 const App = observer(() => {
     const {user} = useContext(Context)
@@ -29,16 +27,19 @@ const App = observer(() => {
         }
     }, [token, user])
     if (loading) {
-        // return <ComponentSpinner/>
         return <div style={{width: "100px", height: "100px", margin: "auto"}}
-                    className="d-flex flex-column justify-content-center"><Spinner animation="grow"/></div>;
+                    className="d-flex flex-column justify-content-center m-auto"><Spinner animation="grow"/></div>;
     }
     return (
-        <BrowserRouter>
-            <NavBar/>
-            <AppRouter/>
-            <Footer/>
-        </BrowserRouter>
+        <>
+            <Toaster position="top-right"/>
+            <BrowserRouter>
+                <NavBar/>
+                <AppRouter/>
+                <Footer/>
+            </BrowserRouter>
+        </>
+
     )
 });
 

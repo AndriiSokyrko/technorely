@@ -3,9 +3,10 @@ import Modal from "react-bootstrap/Modal";
 import {Button, Form} from "react-bootstrap";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
-import {editCompany, fetchCompanyById} from "../../http/companyAPI";
+import {editCompany} from "../../http/companyAPI";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import toast from "react-hot-toast";
 
 const EditCompany = observer(({show, onHide, companyId}) => {
     const {company, user} = useContext(Context)
@@ -32,9 +33,9 @@ const EditCompany = observer(({show, onHide, companyId}) => {
         editCompany(formData).then(_ => {
             onHide()
             company.setFlagRedrawCompany(1)
-            alert('Company is updated')
-        }).catch((e) => {
-            alert(e.message)
+            toast.success("Успешно сохранено!")
+        }).catch(e => {
+            toast.error("Ошибка сохранения!")
         })
     }
     const handleInfoChange = (key, value) => {

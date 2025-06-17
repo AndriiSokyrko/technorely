@@ -1,14 +1,14 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {Container, Form} from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
-import {NavLink, useLocation, useNavigate} from "react-router-dom";
-import {LOGIN_ROUTE, REGISTRATION_ROUTE, ADMIN_ROUTE, USER_ROUTE, ROOT_ROUTE} from "../utils/consts";
-import {getUserById, login, registration} from "../http/userAPI";
+import {NavLink, useLocation} from "react-router-dom";
+import {LOGIN_ROUTE, REGISTRATION_ROUTE} from "../utils/consts";
+import {login, registration} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
-import {Context} from "../index";
 import {validateEmail} from "../utils/common";
+import toast from "react-hot-toast";
 
 const Auth = observer(() => {
     const location = useLocation()
@@ -21,15 +21,15 @@ const Auth = observer(() => {
             if (isLogin) {
                 try {
                     await login(email, password);
-                } catch (e){
-                    alert('Пользователь не авторизирован')
 
+                } catch (e) {
+                    toast.error("Ошибка при сохранении!");
                 }
-
             } else {
                 const token = await registration(email, password);
-                if(token){
-                    alert('Регистрация успешна!')
+                if (token) {
+                    toast.success("Успешно зарегистрирован!");
+
                 }
             }
             window.location.reload();
@@ -68,12 +68,16 @@ const Auth = observer(() => {
                     />
                     <Row className="d-flex justify-content-between mt-3 pl-3 pr-3  ">
                         {isLogin ?
-                            <div >
-                                Нет аккаунта? <NavLink to={REGISTRATION_ROUTE} style={{color: "black", fontWeight: "bold"}}>Зарегистрируйся!</NavLink>
+                            <div>
+                                Нет аккаунта? <NavLink to={REGISTRATION_ROUTE} style={{
+                                color: "black",
+                                fontWeight: "bold"
+                            }}>Зарегистрируйся!</NavLink>
                             </div>
                             :
                             <div>
-                                Есть аккаунт? <NavLink to={LOGIN_ROUTE} style={{color: "black", fontWeight: "bold"}}>Войдите!</NavLink>
+                                Есть аккаунт? <NavLink to={LOGIN_ROUTE}
+                                                       style={{color: "black", fontWeight: "bold"}}>Войдите!</NavLink>
                             </div>
                         }
                         <Button

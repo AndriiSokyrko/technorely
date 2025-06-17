@@ -14,6 +14,6 @@ router.get('/auth',  passport.authenticate('jwt', { session: false }), userContr
 // router.get('/', authMiddleware, userController.getAll)
 router.get('/', passport.authenticate('role', { session: false }), userController.getAllUsers)
 router.get('/:id', userController.getByUserId);
-router.patch('/:id',userController.editByUserId);
+router.patch('/update',userController.updateByUserId);
 router.delete('/:id', userController.deleteByUserId);
 module.exports = router

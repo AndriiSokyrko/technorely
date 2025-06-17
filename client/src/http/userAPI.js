@@ -42,7 +42,14 @@ export const getUserById = async (id) => {
     const {data} = await $authHost.get(`api/user/${id}`)
     return data
 }
-export const editUser = async (user) => {
-    const {data} = await $authHost.patch(`api/user/${user.id}`, user)
+export const updateUser = async (formData) => {
+
+    const {data} = await $authHost.patch(`api/user/update`, formData,
+         {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+         }
+    )
     return data
 }
