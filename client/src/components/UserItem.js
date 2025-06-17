@@ -1,30 +1,29 @@
 import React, {useContext} from 'react';
 import {Card, Col} from "react-bootstrap";
 import Image from "react-bootstrap/Image";
-import {useNavigate} from "react-router-dom"
 import {observer} from "mobx-react-lite";
 import {FaEdit, FaTrash} from "react-icons/fa";
-import {deleteCompany} from "../http/companyAPI";
 import {Context} from "../index";
-import IncomeChart from "./IncomeChart";
 import {deleteUser} from "../http/userAPI";
+import toast from "react-hot-toast";
 
 const UserItem = observer(({userData, onEdit}) => {
-    const navigate = useNavigate()
     const {user} = useContext(Context)
     const handleDelete = (id) => {
         if(id===user.getCurrentUser.id){
-            alert("Нельзя удалить текущего пользователя")
+            toast.error("Нельзя удалить текущего пользователя")
             return
         }
         deleteUser(id).then(e => {
-            alert('Пользователь удален')
             user.setFlagRedrawUser(2)
-        }).catch(e=>alert('Ошибка удаления'))
+            toast.success("Успешно удалено!")
+        }).catch(e => {
+            toast.error("Ошибка удаления!")
+        })
 
     }
-    const handleEdit = (userId) => {
-        onEdit(userId)
+    const handleEdit = (userData) => {
+        onEdit(userData)
     }
     return (
         <>
@@ -43,7 +42,7 @@ const UserItem = observer(({userData, onEdit}) => {
                         style={{cursor: 'pointer', marginRight: '10px'}}
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleEdit(userData.id);
+                            handleEdit(userData);
                         }}
                     />
                     <FaTrash

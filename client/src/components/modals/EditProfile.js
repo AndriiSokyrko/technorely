@@ -3,31 +3,31 @@ import Modal from "react-bootstrap/Modal";
 import {Button, Dropdown, Form} from "react-bootstrap";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
-import {editUser, getUserById} from "../../http/userAPI";
+import {updateUser} from "../../http/userAPI";
+import toast from "react-hot-toast";
 
-const EditProfile = observer(({show, onHide, userId}) => {
+const EditProfile = observer(({show, onHide, userData}) => {
     const {user, role} = useContext(Context)
-    const [email, setEmail] = useState(user.getCurrentUser.email)
-    const [description, setDescription] = useState(user.getCurrentUserInfo.description)
-    const [roleUser, setRoleUser] = useState(user.getCurrentUser.role)
-    const [img, setImg] = useState('')
-    const saveUser = () => {
+    const [email, setEmail] = useState('')
+    const [id, setId] = useState('')
+    const [description, setDescription] = useState('')
+    const [roleUser, setRoleUser] = useState('')
+    const [img, setImg] = useState(null)
+
+    const saveUser =   () => {
         const formData = new FormData()
-        formData.append('id', user.getCurrentUser.id)
+        formData.append('id', id)
         formData.append('email', email)
         formData.append('role', roleUser)
         formData.append('description', description)
         formData.append('img', img)
-
-        const selectFile = e => {
-            setImg(e.target.files[0])
-        }
-        editUser(formData).then(_ => {
+          updateUser(formData).then(info => {
             onHide()
+            user.setUpdateUserById(info)
             user.setFlagRedrawUser(3)
-            alert('Сохранено')
+              toast.success("Успешно сохранено!");
         }).catch(e => {
-            alert(e.message)
+              toast.error("Ошибка при сохранении!");
         })
 
     }
@@ -35,21 +35,13 @@ const EditProfile = observer(({show, onHide, userId}) => {
         setImg(e.target.files[0])
     }
     useEffect(()=>{
-        if(userId!==user.getCurrentUser.id ){
-            user.setUserId(userId)
-            const userData = user.getUserById
-            if(userData){
-                setEmail(userData.email)
-                setRoleUser(userData.role)
-                setDescription(userData.user_info.description)
-            }
-
-        } else {
-            setEmail(user.getCurrentUser.email)
-            setRoleUser(user.getCurrentUser.role)
-            setDescription(user.getCurrentUserInfo.description)
-        }
-    },[userId])
+        if(userData){
+                    setId(userData.id)
+                    setEmail(userData.email)
+                    setRoleUser(userData.role)
+                    setDescription(userData.user_info.description)
+                }
+    },[userData])
     return (
         <Modal
             show={show}
@@ -63,8 +55,11 @@ const EditProfile = observer(({show, onHide, userId}) => {
             </Modal.Header>
             <Modal.Body>
                 <Form>
+                    <Form.Label
+                        className="mt-3 d-flex"
+                    >Id: {id}</Form.Label>
                     <Form.Label className=" mt-2 mb-0 p-0">Email</Form.Label>
-                    <Form.Control
+                     <Form.Control
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         className="mt-3"

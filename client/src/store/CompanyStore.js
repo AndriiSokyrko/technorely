@@ -10,7 +10,7 @@ export default class CompanyStore {
         this._companyId = 1
         this._flagRdrawCompany = 0
         this._minCapital = 0
-        this._maxCapital = 1000000
+        this._maxCapital = 1000000000
         this._nameSort ='name'
         this._typeSort='asc'
         this._startDate= null

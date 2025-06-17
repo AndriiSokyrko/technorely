@@ -17,8 +17,10 @@ export default class UserStore {
         this._limit = 4
         makeAutoObservable(this)
     }
-    setUserInfo(info){
-        this._usersInfo = info
+    setUpdateUserById(info){
+        this._users.map(user=>{
+           if (user.id===info.id) return {...this._users, user}
+            })
     }
     setFlagRedrawUser(num){
         this._flagRedrawUser = num
@@ -57,18 +59,14 @@ export default class UserStore {
     get getCurrentUserInfo() {
         return this._currentUserInfo
     }
-    get getUserId() {
-       return this._userId
-    }
+
     get getUserById() {
         return this._users.find(user=>user.id===this._userId)
     }
     get getUsers() {
         return this._users
     }
-    get getUserInfo(){
-        return this._usersInfo
-    }
+
     get flagRedrawUser(){
         return this._flagRedrawUser
     }

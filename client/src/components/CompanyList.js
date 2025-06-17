@@ -5,9 +5,7 @@ import {Row} from "react-bootstrap";
 import CompanyItem from "./CompanyItem";
 import {fetchCompany} from "../http/companyAPI";
 import EditCompany from "./modals/EditCompany";
-import {forEach} from "react-bootstrap/ElementChildren";
 
-// const CompanyList = observer(({handleEditCompany,nameSort, typeSort}) => {
 const CompanyList = observer(() => {
     const {company, user} = useContext(Context)
     const [companyVisible, setCompanyVisible] = useState(false)
@@ -33,8 +31,8 @@ const CompanyList = observer(() => {
     }, [company.page, company.flagRedrawCompany, company.getNameSort, company.getTypeSort])
     return (
         <Row className="d-flex">
-            {company.getCompany.map(comp =>
-                <CompanyItem key={comp.id} comp={comp} onEdit={handleEdit}/>
+            {company.getCompany.map(companyInfo =>
+                <CompanyItem key={companyInfo.id} companyInfo={companyInfo} onEdit={handleEdit}/>
             )}
             <EditCompany show={companyVisible} onHide={() => setCompanyVisible(false)} companyId={companyId}/>
         </Row>

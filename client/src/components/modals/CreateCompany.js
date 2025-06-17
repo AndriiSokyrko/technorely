@@ -30,13 +30,12 @@ const CreateCompany = observer(({show, onHide}) => {
         formData.append('img', img)
         formData.append('userId', user.getCurrentUser.id)
         formData.append('info', JSON.stringify(info))
-        createCompany(formData).then(_ => {
+        createCompany(formData).then( _ => {
             onHide()
-            company.setFlagRedrawCompany(1)
-            toast.success('Сохранено!')
-            alert('Company created')
-        }).catch((e) => {
-            alert('Thomething wrong: '+e.response.data.message)
+            company.setFlagRedrawCompany(3)
+            toast.success("Успешно сохранено!")
+        }).catch(e => {
+            toast.error("Компания с таким название уже зарегистрирована!")
         })
         company.setFlagRedrawCompany(3)
     }

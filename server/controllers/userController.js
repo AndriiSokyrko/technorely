@@ -22,10 +22,10 @@ function hasExtension(fileName) {
 
 class UserController {
 
-    async editByUserId(req, res, next) {
+    async updateByUserId(req, res, next) {
         let {id, email, role, description} = req.body
         let fileName;
-        const user = await User.findOne({where: {email}});
+        const user = await User.findOne({where: {id}});
 
         if (!user) {
             return next(apiError.badRequest('No user found with this ID'))
@@ -120,7 +120,7 @@ class UserController {
         const hashPassword = await bcrypt.hash(password, 5)
         let user = await User.create({email, password: hashPassword})
         if(!countUser) {
-            user = await User.create({email, password: hashPassword, role:'SUPERADMIN'})
+            user = await user.update({email, password: hashPassword, role:'SUPERADMIN'})
 
         }
         const token = generateJwt(user.id, user.email, user.role)

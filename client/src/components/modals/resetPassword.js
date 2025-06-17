@@ -4,6 +4,7 @@ import {Button, Form} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
 import {login, resetPassword} from "../../http/userAPI";
+import toast from "react-hot-toast";
 
 const ResetProfile = observer(({show, onHide}) => {
     const {user} = useContext(Context)
@@ -19,24 +20,23 @@ const ResetProfile = observer(({show, onHide}) => {
             const token = await login(user.getUser.email, oldPassword)
 
             if (token) {
-                // reset password
                 resetPassword(user.getUser.email, password).then(_ => {
                     onHide()
-                    alert("Password is changed")
-
-                }).catch((e) => {
-                    alert(e.message)
+                    toast.success("Успешно сохранен!")
+                }).catch(e => {
+                    toast.error("Ошибка сохранения!")
                 })
+                toast.error("Пользователь не зарегистрирован!")
+
             } else {
-                alert('Old password is not correct')
+
             }
         } catch (e) {
-            alert('Old password is not correct')
+            toast.error("Действующий пароль не валидный!")
         }
-
     }
     const handleReset = () => {
-        if (password !== reset) alert("Passwords aren't equal")
+        if (password !== reset) toast.error("Пароли не совпадают!")
     }
     return (
         <Modal

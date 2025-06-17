@@ -1,8 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
-import {ADMIN_ROUTE, LOGIN_ROUTE, PUBLIC_ROUTE, USER_ROUTE} from "../utils/consts";
-import {check} from "../http/userAPI";
-import {jwtDecode} from "jwt-decode";
+import {ADMIN_ROUTE, LOGIN_ROUTE,  USER_ROUTE} from "../utils/consts";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 
