@@ -19,7 +19,7 @@ const App = observer(() => {
         if (!token) {
             setLoading(false)
         } else {
-            check().then(async (data) => {
+            check(token).then( (data) => {
                 user.setIsAuth(true)
                 const infoUser = jwtDecode(token)
                 user.setCurrentUser(infoUser)

@@ -12,6 +12,7 @@ const Sort = () => {
         company.setNameSort(nameSort)
         company.setTypeSort(typeSort)
         company.setFlagRedrawCompany(2)
+        company.setFilterByCapital()
     }
     return (
         <ButtonGroup className="bg-dark border-black rounded-2">

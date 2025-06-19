@@ -20,7 +20,7 @@ const CompanyList = observer(() => {
             const startDate = company.getStartDate!=null ? new Date(company.getStartDate.setHours(0, 0, 0, 0) ): null
             const endDate = company.getEndDate!=null ? new Date(company.getEndDate.setHours(23, 59, 999, 0) ): null
 
-        fetchCompany(startDate, endDate, company.minCapital,company.maxCapital, user.getCurrentUser.id,user.getCurrentUser.role,
+       if(company.flagRedrawCompany!==0) fetchCompany(startDate, endDate, company.minCapital,company.maxCapital, user.getCurrentUser.id,user.getCurrentUser.role,
             company.page, company.limit,company.getNameSort, company.getTypeSort).then(data => {
                 company.setCompany(data.rows)
                 company.setTotalCount(data.count)

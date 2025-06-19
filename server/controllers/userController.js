@@ -90,15 +90,14 @@ class UserController {
 
     async resetPassword(req, res, next) {
         const {email, password} = req.body
-
         if (!email || !password) {
             return next(apiError.badRequest('No correct email or password'))
         }
         const user = await User.findOne({where: {email}})
+
         if (!user) {
             return next(apiError.badRequest('User with this email is not found'))
         }
-
         const hashPassword = await bcrypt.hash(password, 5)
          await user.update({password: hashPassword})
 
@@ -146,9 +145,32 @@ class UserController {
 
     }
 
-    async auth(req, res, next) {
-        const token = generateJwt(req.user.id, req.user.email, req.user.role)
+    async checkPassword(req, res, next) {
+        let {password, email} = req.body
+        const user = await User.findOne({where: {email}})
+        if (!user) {
+            return next(apiError.badRequest('No user found'))
+        }
+        let comparePassword = bcrypt.compareSync(password, user.password)
+        if (!comparePassword) {
+            next(apiError.badRequest('No correct password'))
+        }
+        const token = generateJwt(user.id, user.email, user.role)
+
         return res.json({token})
+    }
+
+    async auth(req, res, next) {
+        let {token} = req.body
+        const secret = process.env.SECRET_KEY;
+        try {
+            jwt.verify(token, secret)
+            token = generateJwt(req.user.id, req.user.email, req.user.role)
+            return res.status(200).json({token})
+        }catch (err) {
+            return next(apiError.badRequest('No valid token'))
+        }
+
     }
 
     async getAllUsers(req, res, next) {

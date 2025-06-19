@@ -17,7 +17,10 @@ const Pages = observer(({company}) => {
                 <Pagination.Item
                     key={page}
                     active={company.page === page}
-                    onClick={() => company.setPage(page)}
+                    onClick={() => {
+                        company.setPage(page)
+                        company.setFlagRedrawCompany(3)
+                    }}
                     className={company.page === page ? 'active-pagination' : ''}
                 >
                     {page}

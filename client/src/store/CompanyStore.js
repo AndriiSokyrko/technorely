@@ -10,7 +10,7 @@ export default class CompanyStore {
         this._companyId = 1
         this._flagRdrawCompany = 0
         this._minCapital = 0
-        this._maxCapital = 10000000
+        this._maxCapital = 100000000
         this._nameSort ='name'
         this._typeSort='asc'
         this._startDate= null
@@ -61,7 +61,21 @@ export default class CompanyStore {
     setMinCapital(capital) {
         this._minCapital = capital
     }
-
+    setFilterByCapital(){
+        if(this._typeSort==='asc') {
+            this._company.sort((a, b) => {
+                if (a.name === this._nameSort) return a.name - b.name
+                if (a.service === this._nameSort) return a.service - b.service
+                if (a.capital === this._nameSort) return a.capital - b.capital
+            })
+        } else {
+            this._company.sort((a, b) => {
+                if (a.name === this._nameSort) return b.name - a.name
+                if (a.service === this._nameSort) return b.service - a.service
+                if (a.capital === this._nameSort) return b.capital - a.capital
+            })
+        }
+    }
     setCompanyId(id) {
         this._companyId = id
     }
