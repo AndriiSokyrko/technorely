@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {BrowserRouter, useNavigate} from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
-import {check, getUserById} from "./http/userAPI";
+import {check} from "./http/userAPI";
 import {Context} from "./index";
 import {jwtDecode} from "jwt-decode";
 import {observer} from "mobx-react";
@@ -14,20 +14,15 @@ const App = observer(() => {
     const {user} = useContext(Context)
     const [loading, setLoading] = useState(true)
     const token = localStorage.getItem('token');
-    const navigate = useNavigate()
+
     useEffect(() => {
         if (!token) {
             setLoading(false)
         } else {
             check().then(async (data) => {
-                try {
-                    user.setIsAuth(true)
-                    const infoUser = jwtDecode(token)
-                    user.setCurrentUser(infoUser)
-                } catch(e) {
-                     navigate('/login')
-                }
-
+                user.setIsAuth(true)
+                const infoUser = jwtDecode(token)
+                user.setCurrentUser(infoUser)
             }).finally(() => setLoading(false))
         }
     }, [token, user])

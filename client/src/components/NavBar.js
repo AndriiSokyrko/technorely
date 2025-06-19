@@ -39,7 +39,7 @@ const NavBar = observer(() => {
         setResetVisible(true)
     }
     useEffect(  ()=>{
-          getUserById(user.getCurrentUser.id).then(info => {
+          if(user.isAuth) getUserById(user.getCurrentUser.id).then(info => {
             user.setCurrentUserIfo(info.user_info)
               setImg(info.user_info.img)
         })

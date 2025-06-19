@@ -21,6 +21,7 @@ const Root = observer(() => {
         }
 
     }, [navigate, user]);
+
     return (
         <></>
     );
