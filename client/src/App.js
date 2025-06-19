@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {BrowserRouter} from "react-router-dom";
+import {BrowserRouter, useNavigate} from "react-router-dom";
 import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
 import {check, getUserById} from "./http/userAPI";
@@ -14,15 +14,20 @@ const App = observer(() => {
     const {user} = useContext(Context)
     const [loading, setLoading] = useState(true)
     const token = localStorage.getItem('token');
-
+    const navigate = useNavigate()
     useEffect(() => {
         if (!token) {
             setLoading(false)
         } else {
             check().then(async (data) => {
-                user.setIsAuth(true)
-                const infoUser = jwtDecode(token)
-                user.setCurrentUser(infoUser)
+                try {
+                    user.setIsAuth(true)
+                    const infoUser = jwtDecode(token)
+                    user.setCurrentUser(infoUser)
+                } catch(e) {
+                     navigate('/login')
+                }
+
             }).finally(() => setLoading(false))
         }
     }, [token, user])
