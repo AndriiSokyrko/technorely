@@ -26,7 +26,7 @@ const Filter = observer(() => {
         setStartDate(null);
         setEndDate(null);
         company.setMinCapital(0)
-        company.setMaxCapital(1000000)
+        company.setMaxCapital(100000000)
         setValueMin(company.minCapital)
         setValueMax(company.maxCapital)
         company.setStartDate(null)
@@ -83,7 +83,7 @@ const Filter = observer(() => {
                 </Form.Label>
                 <Form.Range
                     min={0}
-                    max={1000000}
+                    max={company.maxCapital}
                     value={valueMin}
                     onChange={handleChangeMin}
                 />
